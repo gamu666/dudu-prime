@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Зарын дэлгэрэнгүй — ӨРГӨӨ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <div class="logo"><span class="mark"></span><span id="brand-name">ӨРГӨӨ</span></div>
+    <nav class="nav">
+      <a href="index.html?type=Орон сууц">Орон сууц</a>
+      <a href="index.html?type=Оффис">Оффис</a>
+      <a href="index.html?type=Газар">Газар</a>
+      <a href="index.html?type=Барилга">Барилга</a>
+      <a href="index.html#footer">Бидний тухай</a>
+    </nav>
+    <div class="header-actions">
+      <span class="header-phone" id="brand-phone">+976 9911 2233</span>
+      <a href="index.html#footer" class="btn btn-accent">Холбоо барих</a>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="breadcrumb" id="breadcrumb">
+    <a href="index.html">Нүүр</a> › <span id="crumb-type"></span> › <b id="crumb-title"></b>
+  </div>
+
+  <div id="detail-content">
+    <p class="empty-state">Ачааллаж байна...</p>
+  </div>
+</div>
+
+<footer class="site-footer" style="margin-top:56px;">
+  <div class="wrap">
+    <div class="footer-bottom">
+      <span>© <span id="year"></span> ӨРГӨӨ. Бүх эрх хамгаалагдсан.</span>
+      <a href="index.html">← Бүх зар руу буцах</a>
+    </div>
+  </div>
+</footer>
+
+<button class="chat-launcher" onclick="document.getElementById('chat-panel').classList.toggle('open')">💬</button>
+<div class="chat-panel" id="chat-panel">
+  <div class="chat-head">
+    <div class="avatar"></div>
+    <div>
+      <strong>ӨРГӨӨ дэмжлэг</strong>
+      <span class="status"><span class="dot"></span>Онлайн байна</span>
+    </div>
+  </div>
+  <div class="chat-body">Энэ байрны талаар асуух зүйл байвал бичээрэй.</div>
+</div>
+
+<script src="config.js"></script>
+<script src="data.js"></script>
+<script src="detail.js"></script>
+</body>
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ӨРГӨӨ — Үл хөдлөх хөрөнгийн зуучлал</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <div class="logo"><span class="mark"></span><span id="brand-name">ӨРГӨӨ</span></div>
+    <nav class="nav">
+      <a href="index.html?type=Орон сууц" class="active">Орон сууц</a>
+      <a href="index.html?type=Оффис">Оффис</a>
+      <a href="index.html?type=Газар">Газар</a>
+      <a href="index.html?type=Барилга">Барилга</a>
+      <a href="#footer">Бидний тухай</a>
+    </nav>
+    <div class="header-actions">
+      <span class="header-phone" id="brand-phone">+976 9911 2233</span>
+      <a href="#footer" class="btn btn-accent">Холбоо барих</a>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <p class="hero-eyebrow">Үл хөдлөх хөрөнгийн зуучлал</p>
+    <h1>Танд яг тохирсон<br>байр, оффис, газар</h1>
+    <p>Улаанбаатар хотын шалгарсан саналуудыг нэг дороос. Шууд утсаар холбогдож, тухайн өдөртөө үзэх боломжтой.</p>
+
+    <form class="search-bar" id="search-form">
+      <div class="field">
+        <label>Төрөл</label>
+        <select id="f-type">
+          <option value="">Бүгд</option>
+          <option>Орон сууц</option>
+          <option>Оффис</option>
+          <option>Газар</option>
+          <option>Барилга</option>
+        </select>
+      </div>
+      <div class="search-divider"></div>
+      <div class="field">
+        <label>Дүүрэг</label>
+        <select id="f-district">
+          <option value="">Бүгд</option>
+          <option>Багануур</option><option>Багахангай</option><option>Баянгол</option>
+          <option>Баянзүрх</option><option>Налайх</option><option>Сонгинохайрхан</option>
+          <option>Сүхбаатар</option><option>Хан-Уул</option><option>Чингэлтэй</option>
+        </select>
+      </div>
+      <div class="search-divider"></div>
+      <div class="field">
+        <label>Хайх үг</label>
+        <input type="text" id="f-query" placeholder="Жишээ: Зайсан, 3 өрөө...">
+      </div>
+      <button type="submit" class="search-btn">Хайх</button>
+    </form>
+  </div>
+</section>
+
+<section class="section" id="listings-section">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <p class="section-eyebrow">Онцлох санал</p>
+        <h2 class="section-title" id="results-title">Шинээр нэмэгдсэн</h2>
+      </div>
+    </div>
+    <div class="listing-grid" id="listing-grid">
+      <p class="empty-state">Ачааллаж байна...</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="padding-top:0;">
+  <div class="wrap">
+    <h2 class="section-title" style="margin-bottom:24px;">Ангилалаар үзэх</h2>
+    <div class="cat-tiles">
+      <a href="index.html?type=Орон сууц" class="tile"><div class="icon"></div><h3>Орон сууц</h3><p>Байр, хотхон</p></a>
+      <a href="index.html?type=Оффис" class="tile"><div class="icon"></div><h3>Оффис</h3><p>Бизнес талбай</p></a>
+      <a href="index.html?type=Газар" class="tile"><div class="icon"></div><h3>Газар</h3><p>Хашаа, талбай</p></a>
+      <a href="index.html?type=Барилга" class="tile"><div class="icon"></div><h3>Барилга байгууламж</h3><p>Барилга бүхэлдээ</p></a>
+    </div>
+  </div>
+</section>
+
+<section class="cta-band">
+  <div class="wrap">
+    <div>
+      <h2>Байр, газраа зарах уу?</h2>
+      <p>Үнэгүй үнэлгээ хийж, 24 цагийн дотор эргэн холбогдоно. Зураг, зарыг бид бэлдэнэ.</p>
+    </div>
+    <div class="cta-actions">
+      <a href="#footer" class="btn btn-accent">Үнэлгээ авах</a>
+      <button class="btn btn-outline-dark" onclick="document.getElementById('chat-panel').classList.add('open')">Онлайн чатаар бичих</button>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer" id="footer">
+  <div class="wrap">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="logo"><span class="mark"></span><span id="brand-name-2">ӨРГӨӨ</span></div>
+        <p>Улаанбаатар хотын үл хөдлөх хөрөнгийн зуучлал.<br>Танд тохирсон байрыг олоход тусална.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Үйлчилгээ</h4>
+        <a href="#">Байр зарах</a><a href="#">Байр худалдаж авах</a><a href="#">Түрээслүүлэх</a><a href="#">Үнэлгээ</a>
+      </div>
+      <div class="footer-col">
+        <h4>Ангилал</h4>
+        <a href="index.html?type=Орон сууц">Орон сууц</a><a href="index.html?type=Оффис">Оффис</a><a href="index.html?type=Газар">Газар</a><a href="index.html?type=Барилга">Барилга</a>
+      </div>
+      <div class="footer-col">
+        <h4>Холбоо барих</h4>
+        <div id="brand-phone-2">+976 9911 2233</div>
+        <div id="brand-email">info@urguu.mn</div>
+        <a href="#">Facebook</a><a href="#">Instagram</a>
+      </div>
+    </div>
+    <hr class="footer-divider">
+    <div class="footer-bottom">
+      <span>© <span id="year"></span> ӨРГӨӨ. Бүх эрх хамгаалагдсан.</span>
+      <span>Нууцлалын бодлого · Үйлчилгээний нөхцөл</span>
+    </div>
+  </div>
+</footer>
+
+<button class="chat-launcher" onclick="document.getElementById('chat-panel').classList.toggle('open')">💬</button>
+<div class="chat-panel" id="chat-panel">
+  <div class="chat-head">
+    <div class="avatar"></div>
+    <div>
+      <strong>ӨРГӨӨ дэмжлэг</strong>
+      <span class="status"><span class="dot"></span>Онлайн байна</span>
+    </div>
+  </div>
+  <div class="chat-body">Танд ямар байр сонирхолтой байна вэ? Бичээд эхлээрэй — удахгvй энэ хэсэгт жинхэнэ чат холбогдоно.</div>
+</div>
+
+<script src="config.js"></script>
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
