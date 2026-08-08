@@ -170,3 +170,17 @@ h3.block-title{font-size:20px;font-weight:700;margin:0 0 14px;}
 
 /* utility */
 .hidden{display:none !important;}
+
+
+                         .mobile-nav{display:none;flex-direction:column;background:var(--ink);border-top:1px solid #232B38;}
+.mobile-nav.open{display:flex;}
+.mobile-nav a{color:var(--muted-lt);padding:15px 24px;font-size:15px;border-bottom:1px solid #1C232F;}
+@media (min-width:901px){.mobile-nav{display:none !important;}}
+
+@media (max-width:640px){
+    .gallery-main{height:260px;}
+    .card-photo{height:170px;}
+    .thumb-row img,.thumb-row .thumb{flex-basis:84px;height:56px;}
+    .gallery-arrow{width:34px;height:34px;font-size:14px;}
+    .agent-card{position:static;}
+}
