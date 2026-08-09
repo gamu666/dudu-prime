@@ -2,6 +2,7 @@
   document.getElementById("year").textContent = new Date().getFullYear();
   document.getElementById("brand-name").textContent = SITE_CONFIG.BRAND.name;
   document.getElementById("brand-phone").textContent = SITE_CONFIG.BRAND.phone;
+    document.getElementById("brand-name-2").textContent = SITE_CONFIG.BRAND.name;
 
   const container = document.getElementById("detail-content");
   const params = new URLSearchParams(location.search);
@@ -104,9 +105,8 @@
                 <span>${SITE_CONFIG.BRAND.agentRole}</span>
               </div>
             </div>
-            <div class="phone-row"><span>${SITE_CONFIG.BRAND.phone}</span><span>📞</span></div>
-            <button class="btn btn-accent" onclick="document.getElementById('chat-panel').classList.add('open')">💬 Онлайн чатаар асуух</button>
-            <a class="btn btn-outline-light" href="index.html#footer">Үзэх цаг товлох</a>
+            <a class="phone-row" href="tel:${SITE_CONFIG.BRAND.phone.replace(/\s+/g, "")}"><span>${SITE_CONFIG.BRAND.phone}</span><span>📞</span></a>
+                        <a class="btn btn-accent" href="${SITE_CONFIG.BRAND.facebook}" target="_blank" rel="noopener">💬 Чатаар холбогдох</a>
             <p class="trust-note">Хариу ихэвчлэн 10 минутын дотор ирдэг</p>
           </div>
         </div>
