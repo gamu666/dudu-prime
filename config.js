@@ -10,5 +10,6 @@ const SITE_CONFIG = {
             agentName: "Р. Дөлгөөн",
             agentRole: "Remax Platin Үл хөдлөх хөрөнгийн зуучлагч",
             facebook: "https://www.facebook.com/profile.php?id=61590391851117",
+            messenger: "https://m.me/61590391851117",
     },
 };
