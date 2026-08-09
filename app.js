@@ -5,6 +5,7 @@
   document.getElementById("brand-phone").textContent = SITE_CONFIG.BRAND.phone;
   document.getElementById("brand-phone-2").textContent = SITE_CONFIG.BRAND.phone;
   document.getElementById("brand-email").textContent = SITE_CONFIG.BRAND.email;
+    document.getElementById("brand-name-3").textContent = SITE_CONFIG.BRAND.name;
 
   const grid = document.getElementById("listing-grid");
   const params = new URLSearchParams(location.search);
