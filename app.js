@@ -53,11 +53,13 @@
 
   function applyFilters() {
     const type = document.getElementById("f-type").value;
+        const status = document.getElementById("f-status").value;
     const district = document.getElementById("f-district").value;
     const q = document.getElementById("f-query").value.trim().toLowerCase();
     const filtered = allListings.filter(l => {
       if (type && l.type !== type) return false;
       if (district && l.district !== district) return false;
+            if (status && l.status !== status) return false;
       if (q) {
         const hay = [l.title, l.location, l.district, l.description].join(" ").toLowerCase();
         if (!hay.includes(q)) return false;
@@ -65,7 +67,7 @@
       return true;
     });
     document.getElementById("results-title").textContent =
-      (type || district || q) ? `${filtered.length} тохирох зар` : "Шинээр нэмэгдсэн";
+            (type || status || district || q) ? `${filtered.length} тохирох зар` : "Шинээр нэмэгдсэн";
     render(filtered);
   }
 
