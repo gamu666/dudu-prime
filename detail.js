@@ -98,7 +98,7 @@
         <div class="detail-side">
           <div class="agent-card">
             <div class="agent-profile">
-              <div class="avatar"></div>
+              <img class="avatar" src="agent.jpg" alt="Агент">
               <div>
                 <strong>${SITE_CONFIG.BRAND.agentName}</strong>
                 <span>${SITE_CONFIG.BRAND.agentRole}</span>
