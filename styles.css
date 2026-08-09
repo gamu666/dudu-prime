@@ -192,3 +192,7 @@ h3.block-title{font-size:20px;font-weight:700;margin:0 0 14px;}
 
 .cta-actions{align-items:center;}
 .cta-agent{width:64px;height:64px;border-radius:50%;object-fit:cover;border:3px solid var(--accent);flex-shrink:0;}
+@media (max-width:640px){
+    .footer-top{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+    .footer-brand{grid-column:1 / -1;}
+}
