@@ -106,7 +106,7 @@
               </div>
             </div>
             <a class="phone-row" href="tel:${SITE_CONFIG.BRAND.phone.replace(/\s+/g, "")}"><span>${SITE_CONFIG.BRAND.phone}</span><span>📞</span></a>
-                        <a class="btn btn-accent" href="${SITE_CONFIG.BRAND.facebook}" target="_blank" rel="noopener">💬 Чатаар холбогдох</a>
+                        <a class="btn btn-accent" href="${SITE_CONFIG.BRAND.messenger}" target="_blank" rel="noopener">💬 Чатаар холбогдох</a>
             <p class="trust-note">Хариу ихэвчлэн 10 минутын дотор ирдэг</p>
           </div>
         </div>
