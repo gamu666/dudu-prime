@@ -8,7 +8,7 @@ const SITE_CONFIG = {
               phone: "+976 8054 8055",
             email: "dulguunrentsen@gmail.com",
             agentName: "Р. Дөлгөөн",
-            agentRole: "Remax Platin Үл хөдлөх хөрөнгийн зуучлагч",
+                    agentRole: "Remax Platin Prime Үл хөдлөх хөрөнгийн зуучлагч",
             facebook: "https://www.facebook.com/profile.php?id=61590391851117",
             messenger: "https://m.me/61590391851117",
     },
