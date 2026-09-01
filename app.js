@@ -12,8 +12,9 @@
   let allListings = [];
 
   function syncCategoryState(type) {
+    const selectedType = (type || "").trim().toLocaleLowerCase("mn");
     document.querySelectorAll(".tile[data-type]").forEach(tile => {
-      const isActive = tile.dataset.type === type;
+      const isActive = tile.dataset.type.trim().toLocaleLowerCase("mn") === selectedType;
       tile.classList.toggle("is-active", isActive);
       if (isActive) tile.setAttribute("aria-current", "true");
       else tile.removeAttribute("aria-current");
@@ -84,6 +85,18 @@
   document.getElementById("search-form").addEventListener("submit", (e) => {
     e.preventDefault();
     applyFilters();
+  });
+
+  document.querySelector(".cat-tiles").addEventListener("click", (e) => {
+    const tile = e.target.closest(".tile[data-type]");
+    if (!tile) return;
+    e.preventDefault();
+    const type = tile.dataset.type;
+    document.getElementById("f-type").value = type;
+    history.replaceState(null, "", `${location.pathname}?type=${encodeURIComponent(type)}`);
+    syncCategoryState(type);
+    applyFilters();
+    document.getElementById("listings-section").scrollIntoView({ behavior: "smooth", block: "start" });
   });
 
   const initialType = params.get("type");

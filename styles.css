@@ -96,12 +96,12 @@ button{font-family:inherit;cursor:pointer;}
 .tile::after{content:'→';position:absolute;right:18px;top:50%;transform:translateY(-50%);color:var(--muted-lt);font-size:15px;transition:transform .15s,color .15s;}
 .tile:hover{border-color:#CBC7BE;box-shadow:0 8px 20px rgba(14,20,32,.06);transform:translateY(-1px);}
 .tile:hover::after{color:var(--ink);transform:translate(3px,-50%);}
-.tile.is-active{border-color:var(--accent);background:#FFF9EE;box-shadow:0 0 0 1px var(--accent),0 8px 22px rgba(216,155,60,.14);}
-.tile.is-active::before{content:'';position:absolute;inset:9px auto 9px 0;width:4px;border-radius:0 4px 4px 0;background:var(--accent);}
-.tile.is-active::after{content:'СОНГОСОН';right:16px;width:auto;height:auto;padding:5px 8px;border-radius:999px;background:var(--accent);color:var(--ink);box-shadow:none;font-size:9px;font-weight:700;letter-spacing:.08em;transform:translateY(-50%);}
-.tile.is-active:hover::after{color:inherit;transform:translateY(-50%);}
-.tile.is-active h3{color:#8A5711;}
-.tile.is-active h3,.tile.is-active p{margin-right:88px;}
+.tile.is-active{border-color:var(--ink);background:var(--ink);box-shadow:0 9px 22px rgba(14,20,32,.16);}
+.tile.is-active::after{content:'→';right:18px;width:auto;height:auto;padding:0;background:none;color:var(--accent);box-shadow:none;font-size:16px;font-weight:600;transform:translateY(-50%);}
+.tile.is-active:hover{border-color:var(--ink);box-shadow:0 11px 26px rgba(14,20,32,.20);}
+.tile.is-active:hover::after{color:var(--accent);transform:translate(3px,-50%);}
+.tile.is-active h3{color:var(--white);}
+.tile.is-active p{color:var(--muted-lt);}
 .tile:focus-visible{outline:2px solid var(--accent);outline-offset:3px;}
 .tile h3{font-size:15px;line-height:1.3;margin:0 28px 3px 0;}
 .tile p{font-size:12px;color:var(--muted);margin:0 28px 0 0;}
