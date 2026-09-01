@@ -96,7 +96,6 @@
     history.replaceState(null, "", `${location.pathname}?type=${encodeURIComponent(type)}`);
     syncCategoryState(type);
     applyFilters();
-    document.getElementById("listings-section").scrollIntoView({ behavior: "smooth", block: "start" });
   });
 
   const initialType = params.get("type");
