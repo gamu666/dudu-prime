@@ -11,6 +11,15 @@
   const params = new URLSearchParams(location.search);
   let allListings = [];
 
+  function syncCategoryState(type) {
+    document.querySelectorAll(".tile[data-type]").forEach(tile => {
+      const isActive = tile.dataset.type === type;
+      tile.classList.toggle("is-active", isActive);
+      if (isActive) tile.setAttribute("aria-current", "true");
+      else tile.removeAttribute("aria-current");
+    });
+  }
+
   function statusBadgeClass(status) {
     return status === "ЗАРАГДСАН" ? "badge status-sold" : "badge";
   }
@@ -53,6 +62,7 @@
 
   function applyFilters() {
     const type = document.getElementById("f-type").value;
+    syncCategoryState(type);
         const status = document.getElementById("f-status").value;
     const district = document.getElementById("f-district").value;
     const q = document.getElementById("f-query").value.trim().toLowerCase();
@@ -78,6 +88,7 @@
 
   const initialType = params.get("type");
   if (initialType) document.getElementById("f-type").value = initialType;
+  syncCategoryState(initialType || "");
 
   fetchListings().then(list => {
     allListings = list;
