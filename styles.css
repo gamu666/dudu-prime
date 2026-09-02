@@ -399,7 +399,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text"
 .detail-title-row{display:flex;align-items:center;justify-content:space-between;gap:20px;}
 .detail-title-row .detail-price{margin-bottom:6px;}
 .detail-save-button{width:48px;height:48px;border-radius:50%;flex:0 0 auto;}
-.saved-header-button{display:inline-flex;align-items:center;justify-content:center;gap:5px;min-width:43px;height:38px;padding:0 10px;border:1px solid rgba(17,18,20,.1);border-radius:999px;background:rgba(255,255,255,.68);color:var(--ink);font:inherit;cursor:pointer;transition:background .22s ease,color .22s ease,transform .22s ease;}
+.saved-header-button{display:inline-flex;align-items:center;justify-content:center;gap:5px;min-width:46px;height:42px;margin-left:8px;padding:0 11px;border:1px solid rgba(17,18,20,.1);border-radius:999px;background:rgba(255,255,255,.68);color:var(--ink);font:inherit;cursor:pointer;transition:background .22s ease,color .22s ease,transform .22s ease;}
 .saved-header-button:hover{background:#fff;transform:translateY(-1px);}
 .saved-header-button svg{width:16px;height:16px;fill:transparent;stroke:currentColor;stroke-width:1.8;}
 .saved-header-button span{min-width:10px;font-size:11px;font-weight:650;line-height:1;}
@@ -456,5 +456,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text"
   .lightbox-count{bottom:36px;}
   .skeleton-card{height:370px;}
   .skeleton-gallery{height:62vw;min-height:280px;border-radius:20px;}
-  .saved-header-button{height:36px;min-width:40px;padding:0 9px;}
+  .saved-header-button{height:38px;min-width:42px;margin-left:4px;padding:0 9px;}
 }
+
+@media (min-width:701px) and (max-width:900px){.saved-header-button{height:38px;min-width:42px;margin-left:4px;padding:0 9px;}}
