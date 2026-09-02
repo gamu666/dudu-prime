@@ -10,6 +10,7 @@
   const grid = document.getElementById("listing-grid");
   const params = new URLSearchParams(location.search);
   let allListings = [];
+  let showingSaved = params.get("saved") === "1";
   const SAVED_KEY = "urguu-saved-listings";
 
   function savedIds() {
@@ -22,6 +23,14 @@
     if (saved.has(id)) saved.delete(id); else saved.add(id);
     localStorage.setItem(SAVED_KEY, JSON.stringify([...saved]));
     return saved.has(id);
+  }
+
+  function updateSavedControl() {
+    const count = savedIds().size;
+    const button = document.getElementById("saved-filter-button");
+    document.getElementById("saved-count").textContent = count;
+    button.classList.toggle("is-active", showingSaved);
+    button.setAttribute("aria-pressed", String(showingSaved));
   }
 
   function pulse(element) {
@@ -67,7 +76,9 @@
 
   function render(list) {
     if (!list.length) {
-      grid.innerHTML = `<p class="empty-state">Одоогоор тохирох зар алга байна. Sheet-дээ мэдээлэл нэмсэн эсэхээ, эсвэл шvvлтvvрээ шалгана уу.</p>`;
+      grid.innerHTML = showingSaved
+        ? `<div class="empty-state saved-empty"><strong>Хадгалсан зар алга байна</strong><span>Таалагдсан зарынхаа зүрхэн дээр дарахад энд хадгалагдана.</span></div>`
+        : `<p class="empty-state">Одоогоор тохирох зар алга байна. Sheet-дээ мэдээлэл нэмсэн эсэхээ, эсвэл шvvлтvvрээ шалгана уу.</p>`;
       return;
     }
     grid.innerHTML = list.map(card).join("");
@@ -93,6 +104,8 @@
     button.classList.toggle("is-saved", isSaved);
     button.setAttribute("aria-pressed", String(isSaved));
     pulse(button);
+    updateSavedControl();
+    if (showingSaved && !isSaved) applyFilters();
   });
 
   function applyFilters() {
@@ -102,6 +115,7 @@
     const district = document.getElementById("f-district").value;
     const q = document.getElementById("f-query").value.trim().toLowerCase();
     const filtered = allListings.filter(l => {
+      if (showingSaved && !savedIds().has(l.id)) return false;
       if (type && l.type !== type) return false;
       if (district && l.district !== district) return false;
             if (status && l.status !== status) return false;
@@ -112,9 +126,19 @@
       return true;
     });
     document.getElementById("results-title").textContent =
+            showingSaved ? `Хадгалсан ${filtered.length} зар` :
             (type || status || district || q) ? `${filtered.length} тохирох зар` : "Шинээр нэмэгдсэн";
     render(filtered);
   }
+
+  document.getElementById("saved-filter-button").addEventListener("click", () => {
+    showingSaved = !showingSaved;
+    const nextParams = new URLSearchParams(location.search);
+    if (showingSaved) nextParams.set("saved", "1"); else nextParams.delete("saved");
+    history.replaceState(null, "", `${location.pathname}${nextParams.toString() ? `?${nextParams}` : ""}`);
+    updateSavedControl();
+    applyFilters();
+  });
 
   document.getElementById("search-form").addEventListener("submit", (e) => {
     e.preventDefault();
@@ -143,7 +167,10 @@
     e.preventDefault();
     const type = tile.dataset.type;
     document.getElementById("f-type").value = type;
-    history.replaceState(null, "", `${location.pathname}?type=${encodeURIComponent(type)}`);
+    const nextParams = new URLSearchParams();
+    nextParams.set("type", type);
+    if (showingSaved) nextParams.set("saved", "1");
+    history.replaceState(null, "", `${location.pathname}?${nextParams}`);
     syncCategoryState(type);
     applyFilters();
   });
@@ -151,6 +178,7 @@
   const initialType = params.get("type");
   if (initialType) document.getElementById("f-type").value = initialType;
   syncCategoryState(initialType || "");
+  updateSavedControl();
 
   fetchListings().then(list => {
     allListings = list;
