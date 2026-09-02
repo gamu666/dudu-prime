@@ -274,6 +274,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text"
 .categories-section{padding-top:78px;padding-bottom:26px;}
 .categories-section .section-title{margin-bottom:30px;}
 .listings-section{padding-top:46px;}
+.listings-section{scroll-margin-top:66px;}
 
 .cat-tiles{gap:12px;}
 .tile{min-height:92px;padding:20px 22px;border-radius:20px;border-color:rgba(17,18,20,.09);box-shadow:0 1px 2px rgba(0,0,0,.02);transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s ease,border-color .25s ease,background .25s ease;}

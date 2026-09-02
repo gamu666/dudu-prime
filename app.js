@@ -33,6 +33,13 @@
     button.setAttribute("aria-pressed", String(showingSaved));
   }
 
+  function scrollToListings() {
+    requestAnimationFrame(() => document.getElementById("listings-section").scrollIntoView({
+      behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+      block: "start"
+    }));
+  }
+
   function pulse(element) {
     if (!element.animate || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     element.animate([{ transform: "scale(.8)" }, { transform: "scale(1.12)" }, { transform: "scale(1)" }], { duration: 320, easing: "cubic-bezier(.2,.8,.2,1)" });
@@ -138,6 +145,7 @@
     history.replaceState(null, "", `${location.pathname}${nextParams.toString() ? `?${nextParams}` : ""}`);
     updateSavedControl();
     applyFilters();
+    if (showingSaved) scrollToListings();
   });
 
   document.getElementById("search-form").addEventListener("submit", (e) => {
@@ -187,6 +195,7 @@
       return;
     }
     applyFilters();
+    if (showingSaved) scrollToListings();
   }).catch(err => {
     console.error(err);
     grid.innerHTML = `<p class="empty-state">Өгөгдөл татахад алдаа гарлаа. Sheet-ийн CSV линкээ шалгана уу.</p>`;
