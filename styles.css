@@ -39,6 +39,7 @@ button{font-family:inherit;cursor:pointer;}
 .nav a{color:var(--muted-lt);font-size:14px;font-weight:500;transition:color .15s;}
 .nav a:hover,.nav a.active{color:var(--white);}
 .header-actions{display:flex;align-items:center;gap:16px;}
+.contact-actions{display:flex;align-items:center;gap:12px;}
 .header-phone{color:var(--white);font-size:14px;font-weight:500;display:none;}
 @media (min-width:900px){.header-phone{display:inline;}}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:var(--radius-sm);padding:11px 20px;font-size:14px;font-weight:600;border:none;transition:transform .12s,opacity .12s;}
@@ -366,6 +367,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text"
   .logo{font-size:14px;}
   .logo .mark{width:30px;height:30px;}
   .header-actions .btn{font-size:12px;padding:8px 12px;}
+  .header-actions{gap:8px;}
   .hero{padding-top:58px;}
   .hero-eyebrow{font-size:10px;}
   .cat-tiles{grid-template-columns:1fr;}
