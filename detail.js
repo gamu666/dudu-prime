@@ -151,9 +151,11 @@
           <h1 class="detail-title">${l.title || ""}</h1>
           <p class="detail-loc"><span class="location-mark" aria-hidden="true"></span>${[l.district, l.location].filter(Boolean).join(", ")}</p>
           ${specsHtml ? `<div class="specs-bar">${specsHtml}</div>` : ""}
-          ${l.description ? `<h3 class="block-title">Тайлбар</h3><p class="detail-desc">${l.description}</p>` : ""}
-          ${amenitiesHtml ? `<h3 class="block-title">Тохижилт</h3>${amenitiesHtml}` : ""}
-          ${mapHtml ? `<h3 class="block-title">Байршил</h3>${mapHtml}` : ""}
+          <div class="detail-content-stack">
+            ${l.description ? `<section class="detail-section description-section"><div class="detail-section-head"><span>Зарын тухай</span><h3>Тайлбар</h3></div><p class="detail-desc">${l.description}</p></section>` : ""}
+            ${amenitiesHtml ? `<section class="detail-section amenities-section"><div class="detail-section-head"><span>Тав тух</span><h3>Тохижилт</h3></div>${amenitiesHtml}</section>` : ""}
+            ${mapHtml ? `<section class="detail-section location-section"><div class="detail-section-head"><span>Орчин</span><h3>Байршил</h3></div>${mapHtml}</section>` : ""}
+          </div>
         </div>
         <div class="detail-side">
           <div class="agent-card">
