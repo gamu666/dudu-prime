@@ -45,6 +45,62 @@
     element.animate([{ transform: "scale(.8)" }, { transform: "scale(1.12)" }, { transform: "scale(1)" }], { duration: 320, easing: "cubic-bezier(.2,.8,.2,1)" });
   }
 
+  function enhanceSelect(select) {
+    const shell = document.createElement("div");
+    shell.className = "custom-select";
+    const trigger = document.createElement("button");
+    trigger.type = "button";
+    trigger.className = "custom-select-trigger";
+    trigger.dataset.for = select.id;
+    trigger.setAttribute("aria-haspopup", "listbox");
+    trigger.setAttribute("aria-expanded", "false");
+    const menu = document.createElement("div");
+    menu.className = "custom-select-menu";
+    menu.setAttribute("role", "listbox");
+
+    function sync() {
+      const selected = select.options[select.selectedIndex];
+      trigger.innerHTML = `<span>${selected.textContent}</span><i aria-hidden="true"></i>`;
+      menu.querySelectorAll("button").forEach(option => {
+        const active = option.dataset.value === select.value;
+        option.classList.toggle("is-selected", active);
+        option.setAttribute("aria-selected", String(active));
+      });
+    }
+    function close() {
+      shell.classList.remove("is-open");
+      trigger.setAttribute("aria-expanded", "false");
+    }
+
+    [...select.options].forEach(option => {
+      const item = document.createElement("button");
+      item.type = "button";
+      item.setAttribute("role", "option");
+      item.dataset.value = option.value;
+      item.innerHTML = `<span>${option.textContent}</span><i aria-hidden="true"></i>`;
+      item.addEventListener("click", () => {
+        select.value = option.value;
+        select.dispatchEvent(new Event("change", { bubbles: true }));
+        sync();
+        close();
+        trigger.focus();
+      });
+      menu.appendChild(item);
+    });
+    trigger.addEventListener("click", () => {
+      const opening = !shell.classList.contains("is-open");
+      document.querySelectorAll(".custom-select.is-open").forEach(open => open.classList.remove("is-open"));
+      shell.classList.toggle("is-open", opening);
+      trigger.setAttribute("aria-expanded", String(opening));
+    });
+    select.classList.add("native-select-enhanced");
+    select.insertAdjacentElement("afterend", shell);
+    shell.append(trigger, menu);
+    select.addEventListener("change", sync);
+    sync();
+    return { shell, close };
+  }
+
   function syncCategoryState(type) {
     const selectedType = (type || "").trim().toLocaleLowerCase("mn");
     document.querySelectorAll(".tile[data-type]").forEach(tile => {
@@ -187,6 +243,14 @@
   if (initialType) document.getElementById("f-type").value = initialType;
   syncCategoryState(initialType || "");
   updateSavedControl();
+
+  const enhancedSelects = [...document.querySelectorAll(".search-bar select")].map(enhanceSelect);
+  document.addEventListener("click", e => {
+    enhancedSelects.forEach(({ shell, close }) => { if (!shell.contains(e.target)) close(); });
+  });
+  document.addEventListener("keydown", e => {
+    if (e.key === "Escape") enhancedSelects.forEach(({ close }) => close());
+  });
 
   fetchListings().then(list => {
     allListings = list;
