@@ -7,6 +7,24 @@
   const container = document.getElementById("detail-content");
   const params = new URLSearchParams(location.search);
   const id = params.get("id");
+  const SAVED_KEY = "urguu-saved-listings";
+
+  function savedIds() {
+    try { return new Set(JSON.parse(localStorage.getItem(SAVED_KEY) || "[]")); }
+    catch (_) { return new Set(); }
+  }
+
+  function toggleSaved(listingId) {
+    const saved = savedIds();
+    if (saved.has(listingId)) saved.delete(listingId); else saved.add(listingId);
+    localStorage.setItem(SAVED_KEY, JSON.stringify([...saved]));
+    return saved.has(listingId);
+  }
+
+  function pulse(element) {
+    if (!element.animate || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    element.animate([{ transform: "scale(.82)" }, { transform: "scale(1.1)" }, { transform: "scale(1)" }], { duration: 320, easing: "cubic-bezier(.2,.8,.2,1)" });
+  }
 
   function statusBadgeClass(status) {
     return status === "ЗАРАГДСАН" ? "badge status-sold" : "badge";
@@ -16,7 +34,7 @@
     const hasImgs = images.length > 0;
     const mainSrc = hasImgs ? images[0].full : "";
     return `
-      <div class="gallery-main" id="gallery-main" style="${hasImgs ? "" : ""}">
+      <div class="gallery-main" id="gallery-main" role="${hasImgs ? "button" : "img"}" tabindex="${hasImgs ? "0" : "-1"}" aria-label="${hasImgs ? "Зургийг бүтэн дэлгэцээр харах" : "Зураг алга"}">
         ${hasImgs ? `<img id="gallery-img" src="${mainSrc}" alt="">` : ""}
         <div class="gallery-top">
           <span class="badge" id="gallery-badge"></span>
@@ -30,6 +48,7 @@
         </div>` : ""}
       </div>
       ${images.length > 1 ? `<div class="thumb-row" id="thumb-row"></div>` : ""}
+      ${hasImgs ? `<div class="lightbox${images.length === 1 ? " single-image" : ""}" id="lightbox" role="dialog" aria-modal="true" aria-label="Зургийн цомог" aria-hidden="true"><button class="lightbox-close" type="button" aria-label="Хаах">×</button><button class="lightbox-arrow lightbox-prev" type="button" aria-label="Өмнөх зураг">‹</button><img id="lightbox-img" alt=""><button class="lightbox-arrow lightbox-next" type="button" aria-label="Дараагийн зураг">›</button><span class="lightbox-count" id="lightbox-count"></span></div>` : ""}
     `;
   }
 
@@ -40,11 +59,18 @@
     const countEl = document.getElementById("gallery-count");
     const dotsEl = document.getElementById("gallery-dots");
     const thumbRow = document.getElementById("thumb-row");
+    const gallery = document.getElementById("gallery-main");
+    const lightbox = document.getElementById("lightbox");
+    const lightboxImg = document.getElementById("lightbox-img");
+    const lightboxCount = document.getElementById("lightbox-count");
+    let touchStartX = 0;
 
     function show(i) {
       idx = (i + images.length) % images.length;
       imgEl.src = images[idx].full;
       countEl.textContent = `${idx + 1} / ${images.length} зураг`;
+      if (lightboxImg) lightboxImg.src = images[idx].full;
+      if (lightboxCount) lightboxCount.textContent = `${idx + 1} / ${images.length}`;
       if (dotsEl) {
         dotsEl.innerHTML = images.map((_, i2) => `<span class="${i2 === idx ? "active" : ""}"></span>`).join("");
       }
@@ -54,6 +80,36 @@
     }
     window.__galleryPrev = () => show(idx - 1);
     window.__galleryNext = () => show(idx + 1);
+
+    function openLightbox() {
+      lightbox.classList.add("is-open");
+      lightbox.setAttribute("aria-hidden", "false");
+      document.body.classList.add("lightbox-open");
+      document.querySelector(".lightbox-close").focus();
+    }
+    function closeLightbox() {
+      lightbox.classList.remove("is-open");
+      lightbox.setAttribute("aria-hidden", "true");
+      document.body.classList.remove("lightbox-open");
+      gallery.focus({ preventScroll: true });
+    }
+    gallery.addEventListener("click", e => { if (!e.target.closest("button")) openLightbox(); });
+    gallery.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openLightbox(); } });
+    lightbox.querySelector(".lightbox-close").addEventListener("click", closeLightbox);
+    lightbox.querySelector(".lightbox-prev").addEventListener("click", window.__galleryPrev);
+    lightbox.querySelector(".lightbox-next").addEventListener("click", window.__galleryNext);
+    lightbox.addEventListener("click", e => { if (e.target === lightbox) closeLightbox(); });
+    lightbox.addEventListener("touchstart", e => { touchStartX = e.changedTouches[0].clientX; }, { passive: true });
+    lightbox.addEventListener("touchend", e => {
+      const delta = e.changedTouches[0].clientX - touchStartX;
+      if (Math.abs(delta) > 45) delta > 0 ? window.__galleryPrev() : window.__galleryNext();
+    }, { passive: true });
+    document.addEventListener("keydown", e => {
+      if (!lightbox.classList.contains("is-open")) return;
+      if (e.key === "Escape") closeLightbox();
+      if (e.key === "ArrowLeft") window.__galleryPrev();
+      if (e.key === "ArrowRight") window.__galleryNext();
+    });
 
     if (thumbRow) {
       thumbRow.innerHTML = images.map((im, i) =>
@@ -83,12 +139,13 @@
     const mapHtml = (l.lat && l.lng)
       ? `<div class="map-embed"><iframe loading="lazy" src="https://maps.google.com/maps?q=${l.lat},${l.lng}&z=15&output=embed"></iframe></div>`
       : "";
+    const isSaved = savedIds().has(l.id);
 
     container.innerHTML = `
       ${galleryHTML(images)}
       <div class="detail-grid">
         <div class="detail-main">
-          <p class="detail-price">${formatPrice(l.price, l.status)}</p>
+          <div class="detail-title-row"><p class="detail-price">${formatPrice(l.price, l.status)}</p><button class="detail-save-button${isSaved ? " is-saved" : ""}" id="detail-save-button" type="button" aria-label="Зар хадгалах" aria-pressed="${isSaved}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"/></svg></button></div>
           <h1 class="detail-title">${l.title || ""}</h1>
           <p class="detail-loc"><span class="location-mark" aria-hidden="true"></span>${[l.district, l.location].filter(Boolean).join(", ")}</p>
           ${specsHtml ? `<div class="specs-bar">${specsHtml}</div>` : ""}
@@ -115,6 +172,12 @@
 
     document.getElementById("gallery-badge").textContent = statusLabel(l.status);
     document.getElementById("gallery-badge").className = statusBadgeClass(l.status);
+    document.getElementById("detail-save-button").addEventListener("click", e => {
+      const isNowSaved = toggleSaved(l.id);
+      e.currentTarget.classList.toggle("is-saved", isNowSaved);
+      e.currentTarget.setAttribute("aria-pressed", String(isNowSaved));
+      pulse(e.currentTarget);
+    });
     setupGallery(images);
   }
 

@@ -10,6 +10,24 @@
   const grid = document.getElementById("listing-grid");
   const params = new URLSearchParams(location.search);
   let allListings = [];
+  const SAVED_KEY = "urguu-saved-listings";
+
+  function savedIds() {
+    try { return new Set(JSON.parse(localStorage.getItem(SAVED_KEY) || "[]")); }
+    catch (_) { return new Set(); }
+  }
+
+  function toggleSaved(id) {
+    const saved = savedIds();
+    if (saved.has(id)) saved.delete(id); else saved.add(id);
+    localStorage.setItem(SAVED_KEY, JSON.stringify([...saved]));
+    return saved.has(id);
+  }
+
+  function pulse(element) {
+    if (!element.animate || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    element.animate([{ transform: "scale(.8)" }, { transform: "scale(1.12)" }, { transform: "scale(1)" }], { duration: 320, easing: "cubic-bezier(.2,.8,.2,1)" });
+  }
 
   function syncCategoryState(type) {
     const selectedType = (type || "").trim().toLocaleLowerCase("mn");
@@ -27,8 +45,10 @@
 
   function card(l) {
     const chips = specsChips(l).map(c => `<span class="chip">${c}</span>`).join("");
+    const isSaved = savedIds().has(l.id);
     return `
-      <a class="card" href="listing.html?id=${encodeURIComponent(l.id)}">
+      <article class="card">
+        <a class="card-link" href="listing.html?id=${encodeURIComponent(l.id)}">
         <div class="card-photo" data-folder="${l.photoFolder || ""}">
           <span class="${statusBadgeClass(l.status)}">${statusLabel(l.status)}</span>
         </div>
@@ -38,7 +58,11 @@
           <div class="card-loc"><span class="location-mark" aria-hidden="true"></span>${[l.district, l.location].filter(Boolean).join(", ")}</div>
           <div class="card-specs">${chips}</div>
         </div>
-      </a>`;
+        </a>
+        <button class="save-button${isSaved ? " is-saved" : ""}" type="button" data-save-id="${l.id}" aria-label="Зар хадгалах" aria-pressed="${isSaved}">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"/></svg>
+        </button>
+      </article>`;
   }
 
   function render(list) {
@@ -56,10 +80,20 @@
         const img = document.createElement("img");
         img.src = imgs[0].thumb;
         img.alt = "";
+        img.addEventListener("load", () => img.classList.add("is-loaded"), { once: true });
         el.prepend(img);
       }
     });
   }
+
+  grid.addEventListener("click", (e) => {
+    const button = e.target.closest("[data-save-id]");
+    if (!button) return;
+    const isSaved = toggleSaved(button.dataset.saveId);
+    button.classList.toggle("is-saved", isSaved);
+    button.setAttribute("aria-pressed", String(isSaved));
+    pulse(button);
+  });
 
   function applyFilters() {
     const type = document.getElementById("f-type").value;
@@ -85,7 +119,23 @@
   document.getElementById("search-form").addEventListener("submit", (e) => {
     e.preventDefault();
     applyFilters();
+    closeFilterSheet();
   });
+
+  const filterForm = document.getElementById("search-form");
+  function openFilterSheet() {
+    filterForm.classList.add("is-open");
+    document.body.classList.add("filter-sheet-open");
+    document.getElementById("f-type").focus({ preventScroll: true });
+  }
+  function closeFilterSheet() {
+    filterForm.classList.remove("is-open");
+    document.body.classList.remove("filter-sheet-open");
+  }
+  document.getElementById("mobile-filter-trigger").addEventListener("click", openFilterSheet);
+  document.getElementById("filter-sheet-close").addEventListener("click", closeFilterSheet);
+  document.getElementById("filter-backdrop").addEventListener("click", closeFilterSheet);
+  document.addEventListener("keydown", e => { if (e.key === "Escape") closeFilterSheet(); });
 
   document.querySelector(".cat-tiles").addEventListener("click", (e) => {
     const tile = e.target.closest(".tile[data-type]");

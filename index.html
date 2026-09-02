@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ӨРГӨӨ — Үл хөдлөх хөрөнгийн зуучлал</title>
-<link rel="stylesheet" href="styles.css?v=20260902-1">
+<link rel="stylesheet" href="styles.css?v=20260902-3">
 </head>
 <body>
 
@@ -31,7 +31,9 @@
     <h1>Танд яг тохирсон<br>байр, оффис, газар</h1>
     <p>Улаанбаатар хотын шалгарсан саналуудыг нэг дороос. Шууд утсаар холбогдож, тухайн өдөртөө үзэх боломжтой.</p>
 
+    <button class="mobile-filter-trigger" id="mobile-filter-trigger" type="button"><span>Зар шүүх</span><span aria-hidden="true">＋</span></button>
     <form class="search-bar" id="search-form">
+      <div class="filter-sheet-head"><strong>Зар шүүх</strong><button type="button" id="filter-sheet-close" aria-label="Хаах">×</button></div>
       <div class="field">
         <label>Төрөл</label>
         <select id="f-type">
@@ -68,6 +70,7 @@
       </div>
       <button type="submit" class="search-btn">Хайх</button>
     </form>
+    <button class="filter-backdrop" id="filter-backdrop" type="button" aria-label="Шүүлтүүрийг хаах"></button>
   </div>
 </section>
 
@@ -92,7 +95,7 @@
       </div>
     </div>
     <div class="listing-grid" id="listing-grid">
-      <p class="empty-state">Ачааллаж байна...</p>
+      <div class="skeleton-card"></div><div class="skeleton-card"></div><div class="skeleton-card"></div>
     </div>
   </div>
 </section>
@@ -145,6 +148,6 @@
 
 <script src="config.js"></script>
 <script src="data.js"></script>
-<script src="app.js?v=20260902-2"></script>
+<script src="app.js?v=20260902-3"></script>
 </body>
 </html>
