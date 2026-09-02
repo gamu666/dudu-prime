@@ -32,12 +32,12 @@
     return status === "ЗАРАГДСАН" ? "badge status-sold" : "badge";
   }
 
-  function galleryHTML(images) {
+  function galleryHTML(images, imagePosition) {
     const hasImgs = images.length > 0;
     const mainSrc = hasImgs ? images[0].full : "";
     return `
-      <div class="gallery-main" id="gallery-main" role="${hasImgs ? "button" : "img"}" tabindex="${hasImgs ? "0" : "-1"}" aria-label="${hasImgs ? "Зургийг бүтэн дэлгэцээр харах" : "Зураг алга"}">
-        ${hasImgs ? `<img id="gallery-img" src="${mainSrc}" alt="">` : ""}
+      <div class="gallery-main" id="gallery-main" role="${hasImgs ? "button" : "img"}" tabindex="${hasImgs ? "0" : "-1"}" aria-label="${hasImgs ? "Зургийг бүтэн дэлгэцээр харах" : "Зураг алга"}" style="${hasImgs ? `background-image:url(${images[0].tiny});--image-position:${imagePosition || "center"}` : ""}">
+        ${hasImgs ? `<img id="gallery-img" src="${mainSrc}" alt="" style="object-position:${imagePosition || "center"}">` : ""}
         <div class="gallery-top">
           <span class="badge" id="gallery-badge"></span>
           <span class="photo-count" id="gallery-count">${hasImgs ? `1 / ${images.length} зураг` : "Зураг алга"}</span>
@@ -71,7 +71,7 @@
       idx = (i + images.length) % images.length;
       imgEl.src = images[idx].full;
       countEl.textContent = `${idx + 1} / ${images.length} зураг`;
-      if (lightboxImg) lightboxImg.src = images[idx].full;
+      if (lightboxImg) lightboxImg.src = images[idx].original;
       if (lightboxCount) lightboxCount.textContent = `${idx + 1} / ${images.length}`;
       if (dotsEl) {
         dotsEl.innerHTML = images.map((_, i2) => `<span class="${i2 === idx ? "active" : ""}"></span>`).join("");
@@ -144,7 +144,7 @@
     const isSaved = savedIds().has(l.id);
 
     container.innerHTML = `
-      ${galleryHTML(images)}
+      ${galleryHTML(images, l.imagePosition)}
       <div class="detail-grid">
         <div class="detail-main">
           <div class="detail-title-row"><p class="detail-price">${formatPrice(l.price, l.status)}</p><button class="detail-save-button${isSaved ? " is-saved" : ""}" id="detail-save-button" type="button" aria-label="Зар хадгалах" aria-pressed="${isSaved}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"/></svg></button></div>
@@ -180,7 +180,26 @@
       e.currentTarget.setAttribute("aria-pressed", String(isNowSaved));
       document.getElementById("saved-count").textContent = savedIds().size;
       pulse(e.currentTarget);
+      syncMobileSave();
     });
+    const mobileSave = document.getElementById("mobile-save-action");
+    const syncMobileSave = () => {
+      const active = savedIds().has(l.id);
+      mobileSave.classList.toggle("is-saved", active);
+      mobileSave.textContent = active ? "♥" : "♡";
+      mobileSave.setAttribute("aria-pressed", String(active));
+    };
+    mobileSave.addEventListener("click", () => {
+      const active = toggleSaved(l.id);
+      document.getElementById("detail-save-button").classList.toggle("is-saved", active);
+      document.getElementById("detail-save-button").setAttribute("aria-pressed", String(active));
+      document.getElementById("saved-count").textContent = savedIds().size;
+      syncMobileSave();
+    });
+    document.getElementById("mobile-call-action").href = `tel:${SITE_CONFIG.BRAND.phone.replace(/\s+/g, "")}`;
+    document.getElementById("mobile-chat-action").href = SITE_CONFIG.BRAND.messenger;
+    syncMobileSave();
+    document.getElementById("mobile-detail-actions").classList.add("is-ready");
     setupGallery(images);
   }
 

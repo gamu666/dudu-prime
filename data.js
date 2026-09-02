@@ -44,9 +44,20 @@ function normalizeRows(rows) {
     description: findCol(headers, "Тайлбар"),
     amenities: findCol(headers, "Тохижилт"),
     photoFolder: findCol(headers, "Зургийн"),
+    imagePosition: findCol(headers, "Зургийн байрлал"),
     coords: findCol(headers, "Координат") >= 0 ? findCol(headers, "Координат") : findCol(headers, "Lat"),
   };
   const get = (r, key) => (col[key] >= 0 && r[col[key]] !== undefined) ? r[col[key]].trim() : "";
+  const cleanStatus = value => {
+    const normalized = String(value || "").toUpperCase().replaceAll("V", "Ү");
+    if (normalized.includes("ТҮРЭЭС")) return "ТҮРЭЭС";
+    if (normalized.includes("ЗАРАГДСАН")) return "ЗАРАГДСАН";
+    return normalized || "ЗАРНА";
+  };
+  const cleanImagePosition = value => {
+    const position = String(value || "").trim().toLowerCase();
+    return /^(center|top|bottom|left|right|(?:\d{1,3}%\s+\d{1,3}%))$/.test(position) ? position : "center";
+  };
 
   return rows.slice(1)
     .filter(r => get(r, "id"))
@@ -61,7 +72,7 @@ function normalizeRows(rows) {
         id: get(r, "id"),
         title: get(r, "title"),
         type: get(r, "type"),
-        status: get(r, "status") || "ЗАРНА",
+        status: cleanStatus(get(r, "status")),
         price: get(r, "price"),
         district: get(r, "district"),
         location: get(r, "location"),
@@ -72,6 +83,7 @@ function normalizeRows(rows) {
         description: get(r, "description"),
         amenities: get(r, "amenities").split(",").map(s => s.trim()).filter(Boolean),
         photoFolder: get(r, "photoFolder"),
+        imagePosition: cleanImagePosition(get(r, "imagePosition")),
         lat, lng,
       };
     });
@@ -116,8 +128,11 @@ async function fetchFolderImages(folderUrl) {
     if (!data.files) return [];
     return data.files.map(f => ({
       id: f.id,
-      full: `https://drive.google.com/thumbnail?id=${f.id}&sz=w1600`,
-      thumb: `https://drive.google.com/thumbnail?id=${f.id}&sz=w300`,
+      tiny: `https://drive.google.com/thumbnail?id=${f.id}&sz=w80`,
+      card: `https://drive.google.com/thumbnail?id=${f.id}&sz=w900`,
+      thumb: `https://drive.google.com/thumbnail?id=${f.id}&sz=w400`,
+      full: `https://drive.google.com/thumbnail?id=${f.id}&sz=w1800`,
+      original: `https://drive.google.com/thumbnail?id=${f.id}&sz=w2400`,
     }));
   } catch (e) {
     console.warn("Drive folder fetch failed", e);

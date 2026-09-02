@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ӨРГӨӨ — Үл хөдлөх хөрөнгийн зуучлал</title>
-<link rel="stylesheet" href="styles.css?v=20260902-10">
+<title>Dudu Prime — Үл хөдлөх хөрөнгийн зуучлал</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+<link rel="stylesheet" href="styles.css?v=20260902-11">
 </head>
 <body>
 
@@ -51,9 +52,9 @@
       <div class="field">
                 <label>Статус</label>
               <select id="f-status">
-                        <option value="">Бvгд</option>
+                        <option value="">Бүгд</option>
                         <option value="ЗАРНА">Зарна</option>
-                        <option value="ТvРЭЭС">Тvрээслvvлнэ</option>
+                        <option value="ТҮРЭЭС">Түрээслүүлнэ</option>
               </select>
       </div>
           <div class="search-divider"></div>
@@ -96,6 +97,7 @@
         <p class="section-eyebrow">Онцлох санал</p>
         <h2 class="section-title" id="results-title">Шинээр нэмэгдсэн</h2>
       </div>
+      <div class="view-switch" role="group" aria-label="Харагдац"><button class="is-active" id="grid-view-button" type="button">Жагсаалт</button><button id="map-view-button" type="button">Газрын зураг</button></div>
     </div>
     <div class="listing-grid" id="listing-grid">
       <div class="skeleton-card"></div><div class="skeleton-card"></div><div class="skeleton-card"></div>
@@ -125,7 +127,7 @@
       </div>
       <div class="footer-col">
         <h4>Үйлчилгээ</h4>
-                <div>Байр зарах</div><div>Байр худалдаж авах</div><div>Түрээслvvлэх</div><div>Үнэлгээ</div>
+                <div>Байр зарах</div><div>Байр худалдаж авах</div><div>Түрээслүүлэх</div><div>Үнэлгээ</div>
       </div>
       <div class="footer-col">
         <h4>Ангилал</h4>
@@ -140,17 +142,25 @@
     </div>
     <hr class="footer-divider">
     <div class="footer-bottom">
-                  <span>© <span id="year"></span> <span id="brand-name-3">ӨРГӨӨ</span>. Бvх эрх хамгаалагдсан.</span>
+                  <span>© <span id="year"></span> <span id="brand-name-3">ӨРГӨӨ</span>. Бүх эрх хамгаалагдсан.</span>
       <span>Нууцлалын бодлого · Үйлчилгээний нөхцөл</span>
       <span class="footer-credit">DEV by <img src="dev-logo.png" alt="Developer logo"></span>
     </div>
+    <div class="map-view" id="map-view" aria-hidden="true"><div id="property-map"></div></div>
   </div>
 </footer>
 
 <a class="chat-launcher" href="https://m.me/61590391851117" target="_blank" rel="noopener" aria-label="Чатаар холбогдох"><span>Чат</span></a>
 
+<div class="panel-backdrop" id="panel-backdrop"></div>
+<aside class="saved-drawer" id="saved-drawer" aria-hidden="true" aria-labelledby="saved-drawer-title"><div class="drawer-head"><div><span>Таны сонголт</span><h2 id="saved-drawer-title">Хадгалсан зар</h2></div><button type="button" data-close-panel aria-label="Хаах">×</button></div><div class="saved-drawer-list" id="saved-drawer-list"></div></aside>
+<div class="quick-modal" id="quick-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Зарын товч мэдээлэл"><button class="modal-close" type="button" data-close-panel aria-label="Хаах">×</button><div id="quick-modal-content"></div></div>
+<div class="compare-tray" id="compare-tray" aria-hidden="true"><div><strong><span id="compare-count">0</span>/3 зар</strong><span>Харьцуулахад сонгосон</span></div><button type="button" id="clear-compare">Цэвэрлэх</button><button class="btn btn-accent" type="button" id="open-compare">Харьцуулах</button></div>
+<div class="compare-modal" id="compare-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Зарын харьцуулалт"><div class="compare-modal-head"><div><span>Зэрэгцүүлэн харах</span><h2>Зарын харьцуулалт</h2></div><button type="button" data-close-panel aria-label="Хаах">×</button></div><div class="compare-table-wrap" id="compare-table-wrap"></div></div>
+
 <script src="config.js"></script>
 <script src="data.js"></script>
-<script src="app.js?v=20260902-9"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="app.js?v=20260902-11"></script>
 </body>
 </html>
