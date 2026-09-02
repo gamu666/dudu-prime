@@ -327,9 +327,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text"
 .detail-title{font-size:22px;}
 .specs-bar{border-radius:22px;padding:26px 8px;box-shadow:0 2px 8px rgba(0,0,0,.03);}
 .agent-card{border-radius:26px;padding:28px;top:94px;box-shadow:0 18px 50px rgba(0,0,0,.09);}
-.phone-row{border-radius:16px;padding:16px 17px;transition:background .2s ease;}
+.phone-row{position:relative;justify-content:center;border-radius:16px;padding:16px 48px;transition:background .2s ease;text-align:center;}
 .phone-row:hover{background:#e9e9ec;}
-.action-arrow{color:var(--muted);}
+.phone-row .action-arrow{position:absolute;right:17px;top:50%;color:var(--muted);transform:translateY(-50%);}
 
 .reveal-section{opacity:0;transform:translateY(28px);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.8,.2,1);}
 .reveal-section.is-visible{opacity:1;transform:none;}
