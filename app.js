@@ -146,8 +146,10 @@
           <div class="card-specs">${chips}</div>
         </div>
         </a>
-        <button class="quick-view-button" type="button" data-quick-id="${l.id}">Товч харах</button>
-        <button class="compare-button${isCompared ? " is-active" : ""}" type="button" data-compare-id="${l.id}" aria-pressed="${isCompared}"><span></span>Харьцуулах</button>
+        <div class="card-actions">
+          <button class="compare-button${isCompared ? " is-active" : ""}" type="button" data-compare-id="${l.id}" aria-pressed="${isCompared}"><span></span>Харьцуулах</button>
+          <button class="quick-view-button" type="button" data-quick-id="${l.id}">Товч харах <span aria-hidden="true">→</span></button>
+        </div>
         <button class="save-button${isSaved ? " is-saved" : ""}" type="button" data-save-id="${l.id}" aria-label="Зар хадгалах" aria-pressed="${isSaved}">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"/></svg>
         </button>
