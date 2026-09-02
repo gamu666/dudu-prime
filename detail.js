@@ -20,7 +20,7 @@
         ${hasImgs ? `<img id="gallery-img" src="${mainSrc}" alt="">` : ""}
         <div class="gallery-top">
           <span class="badge" id="gallery-badge"></span>
-          <span class="photo-count" id="gallery-count">${hasImgs ? `📷 1 / ${images.length}` : "Зураг алга"}</span>
+          <span class="photo-count" id="gallery-count">${hasImgs ? `1 / ${images.length} зураг` : "Зураг алга"}</span>
         </div>
         ${images.length > 1 ? `
         <div class="gallery-bottom">
@@ -44,7 +44,7 @@
     function show(i) {
       idx = (i + images.length) % images.length;
       imgEl.src = images[idx].full;
-      countEl.textContent = `📷 ${idx + 1} / ${images.length}`;
+      countEl.textContent = `${idx + 1} / ${images.length} зураг`;
       if (dotsEl) {
         dotsEl.innerHTML = images.map((_, i2) => `<span class="${i2 === idx ? "active" : ""}"></span>`).join("");
       }
@@ -105,8 +105,8 @@
                 <span>${SITE_CONFIG.BRAND.agentRole}</span>
               </div>
             </div>
-            <a class="phone-row" href="tel:${SITE_CONFIG.BRAND.phone.replace(/\s+/g, "")}"><span>${SITE_CONFIG.BRAND.phone}</span><span>📞</span></a>
-                        <a class="btn btn-accent" href="${SITE_CONFIG.BRAND.messenger}" target="_blank" rel="noopener">💬 Чатаар холбогдох</a>
+            <a class="phone-row" href="tel:${SITE_CONFIG.BRAND.phone.replace(/\s+/g, "")}"><span>${SITE_CONFIG.BRAND.phone}</span><span class="action-arrow">↗</span></a>
+                        <a class="btn btn-accent" href="${SITE_CONFIG.BRAND.messenger}" target="_blank" rel="noopener">Чатаар холбогдох</a>
             <p class="trust-note">Хариу ихэвчлэн 10 минутын дотор ирдэг</p>
           </div>
         </div>

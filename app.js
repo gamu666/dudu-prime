@@ -113,4 +113,19 @@
     console.error(err);
     grid.innerHTML = `<p class="empty-state">Өгөгдөл татахад алдаа гарлаа. Sheet-ийн CSV линкээ шалгана уу.</p>`;
   });
+
+  const revealObserver = "IntersectionObserver" in window
+    ? new IntersectionObserver(entries => entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+          revealObserver.unobserve(entry.target);
+        }
+      }), { threshold: 0.08, rootMargin: "0px 0px -32px" })
+    : null;
+
+  document.querySelectorAll(".categories-section, .listings-section, .cta-band").forEach(section => {
+    section.classList.add("reveal-section");
+    if (revealObserver) revealObserver.observe(section);
+    else section.classList.add("is-visible");
+  });
 })();
