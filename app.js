@@ -35,7 +35,7 @@
         <div class="card-body">
           <div class="card-price">${formatPrice(l.price, l.status)}</div>
           <div class="card-title">${l.title || "Гарчиггүй зар"}</div>
-          <div class="card-loc">◎ ${[l.district, l.location].filter(Boolean).join(", ")}</div>
+          <div class="card-loc"><span class="location-mark" aria-hidden="true"></span>${[l.district, l.location].filter(Boolean).join(", ")}</div>
           <div class="card-specs">${chips}</div>
         </div>
       </a>`;

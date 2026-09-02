@@ -90,7 +90,7 @@
         <div class="detail-main">
           <p class="detail-price">${formatPrice(l.price, l.status)}</p>
           <h1 class="detail-title">${l.title || ""}</h1>
-          <p class="detail-loc">◎ ${[l.district, l.location].filter(Boolean).join(", ")}</p>
+          <p class="detail-loc"><span class="location-mark" aria-hidden="true"></span>${[l.district, l.location].filter(Boolean).join(", ")}</p>
           ${specsHtml ? `<div class="specs-bar">${specsHtml}</div>` : ""}
           ${l.description ? `<h3 class="block-title">Тайлбар</h3><p class="detail-desc">${l.description}</p>` : ""}
           ${amenitiesHtml ? `<h3 class="block-title">Тохижилт</h3>${amenitiesHtml}` : ""}
