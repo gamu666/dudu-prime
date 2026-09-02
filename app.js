@@ -244,7 +244,9 @@
   syncCategoryState(initialType || "");
   updateSavedControl();
 
-  const enhancedSelects = [...document.querySelectorAll(".search-bar select")].map(enhanceSelect);
+  const enhancedSelects = matchMedia("(min-width: 701px)").matches
+    ? [...document.querySelectorAll(".search-bar select")].map(enhanceSelect)
+    : [];
   document.addEventListener("click", e => {
     enhancedSelects.forEach(({ shell, close }) => { if (!shell.contains(e.target)) close(); });
   });
