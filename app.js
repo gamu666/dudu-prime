@@ -129,12 +129,12 @@
     return status === "ЗАРАГДСАН" ? "badge status-sold" : "badge";
   }
 
-  function card(l) {
+  function card(l, index) {
     const chips = specsChips(l).map(c => `<span class="chip">${c}</span>`).join("");
     const isSaved = savedIds().has(l.id);
     const isCompared = compareIds().has(l.id);
     return `
-      <article class="card" data-listing-id="${l.id}">
+      <article class="card card-enter" data-listing-id="${l.id}" style="--card-delay:${Math.min(index, 8) * 65}ms">
         <a class="card-link" href="listing.html?id=${encodeURIComponent(l.id)}">
         <div class="card-photo" data-folder="${l.photoFolder || ""}" style="--image-position:${l.imagePosition || "center"}">
           <span class="${statusBadgeClass(l.status)}">${statusLabel(l.status)}</span>
@@ -250,7 +250,12 @@
   }
 
   function renderMap() {
-    if (!window.L) return;
+    if (!window.L) {
+      const mapRoot = document.getElementById("property-map");
+      mapRoot.className = "map-fallback";
+      mapRoot.innerHTML = `<iframe title="Улаанбаатар хотын газрын зураг" loading="lazy" src="https://www.openstreetmap.org/export/embed.html?bbox=106.72%2C47.78%2C107.10%2C48.02&amp;layer=mapnik"></iframe><div class="map-fallback-panel"><span>Газрын зураг дээрх зарууд</span>${currentListings.map(l => `<a href="listing.html?id=${encodeURIComponent(l.id)}"><strong>${compactPrice(l.price)}</strong><small>${[l.district,l.location].filter(Boolean).join(", ") || "Улаанбаатар"}</small></a>`).join("")}</div>`;
+      return;
+    }
     if (!propertyMap) {
       propertyMap = L.map("property-map", { zoomControl: false }).setView([47.9184,106.9177], 12);
       L.control.zoom({ position: "bottomright" }).addTo(propertyMap);
@@ -258,9 +263,20 @@
       mapLayer = L.layerGroup().addTo(propertyMap);
     }
     mapLayer.clearLayers();
-    const located = currentListings.filter(l => Number.isFinite(l.lat) && Number.isFinite(l.lng));
-    located.forEach(l => L.marker([l.lat,l.lng], { icon: L.divIcon({ className:"price-marker", html:`<span>${compactPrice(l.price)}</span>`, iconSize:null }) }).addTo(mapLayer).bindPopup(`<strong>${l.title || "Зар"}</strong><br>${formatPrice(l.price,l.status)}<br><a href="listing.html?id=${encodeURIComponent(l.id)}">Дэлгэрэнгүй</a>`));
-    if (located.length) propertyMap.fitBounds(located.map(l => [l.lat,l.lng]), { padding:[40,40], maxZoom:14 });
+    const districtCenters = {
+      "Баянгол":[47.9164,106.8832], "Баянзүрх":[47.9212,106.9692], "Сүхбаатар":[47.9187,106.9176],
+      "Хан-Уул":[47.8866,106.9094], "Чингэлтэй":[47.9347,106.9088], "Сонгинохайрхан":[47.9173,106.8134],
+      "Налайх":[47.7727,107.2533], "Багануур":[47.7798,108.3656], "Багахангай":[47.3607,107.4845]
+    };
+    const hash = value => [...String(value)].reduce((sum, ch) => ((sum * 31) + ch.charCodeAt(0)) | 0, 0);
+    const plotted = currentListings.map(l => {
+      if (Number.isFinite(l.lat) && Number.isFinite(l.lng)) return { listing:l, point:[l.lat,l.lng], approximate:false };
+      const center = districtCenters[l.district] || [47.9184,106.9177];
+      const seed = Math.abs(hash(l.id));
+      return { listing:l, point:[center[0] + ((seed % 17) - 8) * .0011, center[1] + ((Math.floor(seed / 17) % 17) - 8) * .0016], approximate:true };
+    });
+    plotted.forEach(({ listing:l, point, approximate }) => L.marker(point, { icon: L.divIcon({ className:"price-marker", html:`<span>${compactPrice(l.price)}</span>`, iconSize:null }) }).addTo(mapLayer).bindPopup(`<strong>${l.title || "Зар"}</strong><br>${formatPrice(l.price,l.status)}${approximate ? '<small>Дүүргийн ойролцоо байршил</small>' : ''}<br><a href="listing.html?id=${encodeURIComponent(l.id)}">Дэлгэрэнгүй</a>`));
+    if (plotted.length) propertyMap.fitBounds(plotted.map(item => item.point), { padding:[40,40], maxZoom:14 });
     setTimeout(() => propertyMap.invalidateSize(), 80);
   }
 

@@ -46,6 +46,7 @@ function normalizeRows(rows) {
     photoFolder: findCol(headers, "Зургийн"),
     imagePosition: findCol(headers, "Зургийн байрлал"),
     coords: findCol(headers, "Координат") >= 0 ? findCol(headers, "Координат") : findCol(headers, "Lat"),
+    lng: findCol(headers, "Long"),
   };
   const get = (r, key) => (col[key] >= 0 && r[col[key]] !== undefined) ? r[col[key]].trim() : "";
   const cleanStatus = value => {
@@ -63,10 +64,20 @@ function normalizeRows(rows) {
     .filter(r => get(r, "id"))
     .map(r => {
       const coordsRaw = get(r, "coords");
+      const lngRaw = get(r, "lng");
       let lat = null, lng = null;
-      if (coordsRaw) {
-        const parts = coordsRaw.split(",").map(s => parseFloat(s.trim()));
-        if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) { lat = parts[0]; lng = parts[1]; }
+      if (coordsRaw && !/^https?:/i.test(coordsRaw)) {
+        const decimal = `${coordsRaw}${lngRaw ? `,${lngRaw}` : ""}`.match(/(-?\d+(?:\.\d+)?)\s*[,;\s]+\s*(-?\d+(?:\.\d+)?)/);
+        const dms = coordsRaw.match(/(\d+)°\s*(\d+)'\s*([\d.]+)"?\s*([NS]).*?(\d+)°\s*(\d+)'\s*([\d.]+)"?\s*([EW])/i);
+        if (decimal) {
+          lat = Number(decimal[1]); lng = Number(decimal[2]);
+        } else if (dms) {
+          lat = Number(dms[1]) + Number(dms[2]) / 60 + Number(dms[3]) / 3600;
+          lng = Number(dms[5]) + Number(dms[6]) / 60 + Number(dms[7]) / 3600;
+          if (dms[4].toUpperCase() === "S") lat *= -1;
+          if (dms[8].toUpperCase() === "W") lng *= -1;
+        }
+        if (!Number.isFinite(lat) || !Number.isFinite(lng) || Math.abs(lat) > 90 || Math.abs(lng) > 180) { lat = null; lng = null; }
       }
       return {
         id: get(r, "id"),

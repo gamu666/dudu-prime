@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dudu Prime — Үл хөдлөх хөрөнгийн зуучлал</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
-<link rel="stylesheet" href="styles.css?v=20260902-12">
+<link rel="stylesheet" href="styles.css?v=20260903-13">
 </head>
 <body>
 
@@ -102,6 +102,7 @@
     <div class="listing-grid" id="listing-grid">
       <div class="skeleton-card"></div><div class="skeleton-card"></div><div class="skeleton-card"></div>
     </div>
+    <div class="map-view" id="map-view" aria-hidden="true"><div id="property-map"></div></div>
   </div>
 </section>
 
@@ -146,7 +147,6 @@
       <span>Нууцлалын бодлого · Үйлчилгээний нөхцөл</span>
       <span class="footer-credit">DEV by <img src="dev-logo.png" alt="Developer logo"></span>
     </div>
-    <div class="map-view" id="map-view" aria-hidden="true"><div id="property-map"></div></div>
   </div>
 </footer>
 
@@ -159,8 +159,8 @@
 <div class="compare-modal" id="compare-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Зарын харьцуулалт"><div class="compare-modal-head"><div><span>Зэрэгцүүлэн харах</span><h2>Зарын харьцуулалт</h2></div><button type="button" data-close-panel aria-label="Хаах">×</button></div><div class="compare-table-wrap" id="compare-table-wrap"></div></div>
 
 <script src="config.js"></script>
-<script src="data.js"></script>
+<script src="data.js?v=20260903-13"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-<script src="app.js?v=20260902-11"></script>
+<script src="app.js?v=20260903-13"></script>
 </body>
 </html>
