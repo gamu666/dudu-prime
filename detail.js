@@ -14,6 +14,8 @@
     catch (_) { return new Set(); }
   }
 
+  document.getElementById("saved-count").textContent = savedIds().size;
+
   function toggleSaved(listingId) {
     const saved = savedIds();
     if (saved.has(listingId)) saved.delete(listingId); else saved.add(listingId);
@@ -176,6 +178,7 @@
       const isNowSaved = toggleSaved(l.id);
       e.currentTarget.classList.toggle("is-saved", isNowSaved);
       e.currentTarget.setAttribute("aria-pressed", String(isNowSaved));
+      document.getElementById("saved-count").textContent = savedIds().size;
       pulse(e.currentTarget);
     });
     setupGallery(images);
