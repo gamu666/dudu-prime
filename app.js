@@ -220,15 +220,38 @@
     const l = allListings.find(item => item.id === id);
     if (!l) return;
     const content = document.getElementById("quick-modal-content");
-    content.innerHTML = `<div class="quick-image skeleton-gallery"></div><div class="quick-copy"><span>${l.type || "Үл хөдлөх"}</span><h2>${l.title || "Гарчиггүй зар"}</h2><p class="quick-price">${formatPrice(l.price, l.status)}</p><p>${[l.district,l.location].filter(Boolean).join(", ")}</p><div class="quick-specs">${specsChips(l).map(c => `<b>${c}</b>`).join("")}</div><a class="btn btn-accent" href="listing.html?id=${encodeURIComponent(l.id)}">Дэлгэрэнгүй үзэх</a></div>`;
+    content.innerHTML = `<div class="quick-gallery skeleton-gallery"><div class="quick-gallery-empty">Зургуудыг ачаалж байна</div></div><div class="quick-caption"><div><span>${l.type || "Үл хөдлөх"}</span><strong>${l.title || "Гарчиггүй зар"}</strong><small>${formatPrice(l.price, l.status)}</small></div><a href="listing.html?id=${encodeURIComponent(l.id)}">Дэлгэрэнгүй <span aria-hidden="true">→</span></a></div>`;
     openPanel(document.getElementById("quick-modal"));
     const images = await fetchFolderImages(l.photoFolder);
-    if (images.length) {
-      const box = content.querySelector(".quick-image");
-      box.classList.remove("skeleton-gallery");
-      box.style.backgroundImage = `linear-gradient(180deg,transparent,rgba(0,0,0,.08)),url(${images[0].card})`;
-      box.style.backgroundPosition = l.imagePosition || "center";
-    }
+    const gallery = content.querySelector(".quick-gallery");
+    if (!gallery || !document.getElementById("quick-modal").classList.contains("is-open")) return;
+    if (!images.length) { gallery.classList.remove("skeleton-gallery"); gallery.innerHTML = `<div class="quick-gallery-empty">Энэ зард зураг оруулаагүй байна</div>`; return; }
+    gallery.innerHTML = `<img alt="${l.title || "Зарын зураг"}"><button class="quick-gallery-arrow quick-gallery-prev" type="button" aria-label="Өмнөх зураг">‹</button><button class="quick-gallery-arrow quick-gallery-next" type="button" aria-label="Дараагийн зураг">›</button><span class="quick-gallery-count"></span>`;
+    const image = gallery.querySelector("img");
+    const count = gallery.querySelector(".quick-gallery-count");
+    let active = 0;
+    const show = next => {
+      const target = (next + images.length) % images.length;
+      active = target;
+      count.textContent = `${target + 1} / ${images.length}`;
+      const source = images[target].full || images[target].card;
+      const preload = new Image();
+      preload.onload = () => {
+        if (active !== target) return;
+        image.src = source;
+        image.style.objectPosition = l.imagePosition || "center";
+        gallery.classList.remove("skeleton-gallery");
+        requestAnimationFrame(() => image.classList.add("is-ready"));
+      };
+      preload.src = source;
+    };
+    gallery.querySelector(".quick-gallery-prev").onclick = () => show(active - 1);
+    gallery.querySelector(".quick-gallery-next").onclick = () => show(active + 1);
+    gallery.querySelectorAll(".quick-gallery-arrow").forEach(button => button.hidden = images.length < 2);
+    let touchX = 0;
+    gallery.addEventListener("touchstart", event => { touchX = event.changedTouches[0].clientX; }, { passive:true });
+    gallery.addEventListener("touchend", event => { const delta = event.changedTouches[0].clientX - touchX; if (Math.abs(delta) > 45) show(active + (delta < 0 ? 1 : -1)); }, { passive:true });
+    show(0);
   }
 
   function updateCompareTray() {
