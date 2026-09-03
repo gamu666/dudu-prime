@@ -134,8 +134,8 @@
     const isSaved = savedIds().has(l.id);
     const isCompared = compareIds().has(l.id);
     return `
-      <article class="card card-enter" data-listing-id="${l.id}" style="--card-delay:${Math.min(index, 8) * 65}ms">
-        <a class="card-link" href="listing.html?id=${encodeURIComponent(l.id)}">
+      <article class="card card-enter" data-listing-id="${l.id}" data-open-id="${l.id}" tabindex="0" aria-label="${l.title || "Зар харах"}" style="--card-delay:${Math.min(index, 8) * 65}ms">
+        <div class="card-link">
         <div class="card-photo" data-folder="${l.photoFolder || ""}" style="--image-position:${l.imagePosition || "center"}">
           <span class="${statusBadgeClass(l.status)}">${statusLabel(l.status)}</span>
         </div>
@@ -145,10 +145,9 @@
           <div class="card-loc"><span class="location-mark" aria-hidden="true"></span>${[l.district, l.location].filter(Boolean).join(", ")}</div>
           <div class="card-specs">${chips}</div>
         </div>
-        </a>
+        </div>
         <div class="card-actions">
           <button class="compare-button${isCompared ? " is-active" : ""}" type="button" data-compare-id="${l.id}" aria-pressed="${isCompared}"><span></span>Харьцуулах</button>
-          <button class="quick-view-button" type="button" data-quick-id="${l.id}">Товч харах <span aria-hidden="true">→</span></button>
         </div>
         <button class="save-button${isSaved ? " is-saved" : ""}" type="button" data-save-id="${l.id}" aria-label="Зар хадгалах" aria-pressed="${isSaved}">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"/></svg>
@@ -213,14 +212,25 @@
     const saved = savedIds();
     const items = allListings.filter(l => saved.has(l.id));
     const list = document.getElementById("saved-drawer-list");
-    list.innerHTML = items.length ? items.map(l => `<article class="drawer-listing"><div><span>${l.type || "Үл хөдлөх"}</span><strong>${l.title || "Гарчиггүй зар"}</strong><p>${formatPrice(l.price, l.status)}</p></div><a href="listing.html?id=${encodeURIComponent(l.id)}">Үзэх</a><button type="button" data-drawer-remove="${l.id}" aria-label="Хадгалалтаас хасах">×</button></article>`).join("") : `<div class="drawer-empty"><strong>Хадгалсан зар алга байна</strong><p>Таалагдсан зарынхаа зүрхэн дээр дарахад энд цугларна.</p></div>`;
+    list.innerHTML = items.length ? items.map(l => `<article class="drawer-listing"><div><span>${l.type || "Үл хөдлөх"}</span><strong>${l.title || "Гарчиггүй зар"}</strong><p>${formatPrice(l.price, l.status)}</p></div><button class="drawer-open" type="button" data-drawer-open="${l.id}">Нээх</button><button class="drawer-remove" type="button" data-drawer-remove="${l.id}" aria-label="Хадгалалтаас хасах">×</button></article>`).join("") : `<div class="drawer-empty"><strong>Хадгалсан зар алга байна</strong><p>Таалагдсан зарынхаа зүрхэн дээр дарахад энд цугларна.</p></div>`;
   }
 
   async function openQuickView(id) {
     const l = allListings.find(item => item.id === id);
     if (!l) return;
     const content = document.getElementById("quick-modal-content");
-    content.innerHTML = `<div class="quick-gallery skeleton-gallery"><div class="quick-gallery-empty">Зургуудыг ачаалж байна</div></div><div class="quick-caption"><div><span>${l.type || "Үл хөдлөх"}</span><strong>${l.title || "Гарчиггүй зар"}</strong><small>${formatPrice(l.price, l.status)}</small></div><a href="listing.html?id=${encodeURIComponent(l.id)}">Дэлгэрэнгүй <span aria-hidden="true">→</span></a></div>`;
+    const quickSpecs = [l.rooms && `${l.rooms} өрөө`, l.area && `${l.area} м²`, l.floor && `${l.floor} давхар`, l.year && `${l.year} он`].filter(Boolean);
+    const quickAmenities = (l.amenities || []).map(item => `<li><span aria-hidden="true"></span>${item}</li>`).join("");
+    content.innerHTML = `<div class="quick-gallery skeleton-gallery"><div class="quick-gallery-empty">Зургуудыг ачаалж байна</div></div>
+      <div class="quick-caption"><div><span>${l.type || "Үл хөдлөх"}</span><strong>${l.title || "Гарчиггүй зар"}</strong><small>${[l.district,l.location].filter(Boolean).join(", ")}</small></div><b>${formatPrice(l.price, l.status)}</b></div>
+      <div class="quick-overview">
+        ${quickSpecs.length ? `<div class="quick-facts">${quickSpecs.map(item => `<span>${item}</span>`).join("")}</div>` : ""}
+        ${l.description ? `<section><span class="quick-section-label">Зарын тухай</span><h3>Тайлбар</h3><p>${l.description}</p></section>` : ""}
+        ${quickAmenities ? `<section><span class="quick-section-label">Тав тух</span><h3>Тохижилт</h3><ul class="quick-amenities">${quickAmenities}</ul></section>` : ""}
+        ${l.lat && l.lng ? `<section><span class="quick-section-label">Орчин</span><h3>Байршил</h3><div class="quick-map"><iframe loading="lazy" title="Зарын байршил" src="https://maps.google.com/maps?q=${l.lat},${l.lng}&z=15&output=embed"></iframe></div></section>` : ""}
+        <div class="quick-agent"><img src="agent.jpg" alt=""><div><strong>${SITE_CONFIG.BRAND.agentName}</strong><span>${SITE_CONFIG.BRAND.agentRole}</span></div></div>
+        <div class="quick-contact"><a href="tel:${SITE_CONFIG.BRAND.phone.replace(/\s+/g, "")}">${SITE_CONFIG.BRAND.phone}</a><a class="primary" href="${SITE_CONFIG.BRAND.messenger}" target="_blank" rel="noopener">Чатаар холбогдох</a></div>
+      </div>`;
     openPanel(document.getElementById("quick-modal"));
     const images = await fetchFolderImages(l.photoFolder);
     const gallery = content.querySelector(".quick-gallery");
@@ -278,7 +288,7 @@
     if (!window.L) {
       const mapRoot = document.getElementById("property-map");
       mapRoot.className = "map-fallback";
-      mapRoot.innerHTML = `<iframe title="Улаанбаатар хотын газрын зураг" loading="lazy" src="https://www.openstreetmap.org/export/embed.html?bbox=106.72%2C47.78%2C107.10%2C48.02&amp;layer=mapnik"></iframe><div class="map-fallback-panel"><span>Газрын зураг дээрх зарууд</span>${currentListings.map(l => `<a href="listing.html?id=${encodeURIComponent(l.id)}"><strong>${compactPrice(l.price)}</strong><small>${[l.district,l.location].filter(Boolean).join(", ") || "Улаанбаатар"}</small></a>`).join("")}</div>`;
+      mapRoot.innerHTML = `<iframe title="Улаанбаатар хотын газрын зураг" loading="lazy" src="https://www.openstreetmap.org/export/embed.html?bbox=106.72%2C47.78%2C107.10%2C48.02&amp;layer=mapnik"></iframe><div class="map-fallback-panel"><span>Газрын зураг дээрх зарууд</span>${currentListings.map(l => `<button type="button" data-map-open="${l.id}"><strong>${compactPrice(l.price)}</strong><small>${[l.district,l.location].filter(Boolean).join(", ") || "Улаанбаатар"}</small></button>`).join("")}</div>`;
       return;
     }
     if (!propertyMap) {
@@ -300,7 +310,7 @@
       const seed = Math.abs(hash(l.id));
       return { listing:l, point:[center[0] + ((seed % 17) - 8) * .0011, center[1] + ((Math.floor(seed / 17) % 17) - 8) * .0016], approximate:true };
     });
-    plotted.forEach(({ listing:l, point, approximate }) => L.marker(point, { icon: L.divIcon({ className:"price-marker", html:`<span>${compactPrice(l.price)}</span>`, iconSize:null }) }).addTo(mapLayer).bindPopup(`<strong>${l.title || "Зар"}</strong><br>${formatPrice(l.price,l.status)}${approximate ? '<small>Дүүргийн ойролцоо байршил</small>' : ''}<br><a href="listing.html?id=${encodeURIComponent(l.id)}">Дэлгэрэнгүй</a>`));
+    plotted.forEach(({ listing:l, point, approximate }) => L.marker(point, { icon: L.divIcon({ className:"price-marker", html:`<span>${compactPrice(l.price)}</span>`, iconSize:null }) }).addTo(mapLayer).bindPopup(`<strong>${l.title || "Зар"}</strong><br>${formatPrice(l.price,l.status)}${approximate ? '<small>Дүүргийн ойролцоо байршил</small>' : ''}<br><button type="button" data-map-open="${l.id}">Зарыг нээх</button>`));
     if (plotted.length) propertyMap.fitBounds(plotted.map(item => item.point), { padding:[40,40], maxZoom:14 });
     setTimeout(() => propertyMap.invalidateSize(), 80);
   }
@@ -316,8 +326,6 @@
       if (showingSaved && !isSaved) applyFilters();
       return;
     }
-    const quick = e.target.closest("[data-quick-id]");
-    if (quick) { openQuickView(quick.dataset.quickId); return; }
     const compare = e.target.closest("[data-compare-id]");
     if (compare) {
       const ids = compareIds();
@@ -326,8 +334,12 @@
       setCompare(ids);
       compare.classList.toggle("is-active", ids.has(id));
       compare.setAttribute("aria-pressed", String(ids.has(id)));
+      return;
     }
+    const open = e.target.closest("[data-open-id]");
+    if (open) openQuickView(open.dataset.openId);
   });
+  grid.addEventListener("keydown", e => { if ((e.key === "Enter" || e.key === " ") && e.target.matches("[data-open-id]")) { e.preventDefault(); openQuickView(e.target.dataset.openId); } });
 
   function applyFilters() {
     const type = document.getElementById("f-type").value;
@@ -359,6 +371,8 @@
   });
 
   document.getElementById("saved-drawer-list").addEventListener("click", e => {
+    const open = e.target.closest("[data-drawer-open]");
+    if (open) { closePanels(); openQuickView(open.dataset.drawerOpen); return; }
     const remove = e.target.closest("[data-drawer-remove]");
     if (!remove) return;
     toggleSaved(remove.dataset.drawerRemove);
@@ -366,6 +380,7 @@
     renderSavedDrawer();
     applyFilters();
   });
+  document.getElementById("property-map").addEventListener("click", e => { const open = e.target.closest("[data-map-open]"); if (open) openQuickView(open.dataset.mapOpen); });
   document.querySelectorAll("[data-close-panel]").forEach(button => button.addEventListener("click", closePanels));
   document.getElementById("panel-backdrop").addEventListener("click", closePanels);
   document.getElementById("clear-compare").addEventListener("click", () => { setCompare(new Set()); applyFilters(); });
