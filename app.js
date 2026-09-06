@@ -386,6 +386,7 @@
   document.querySelectorAll("[data-status]").forEach(button => button.addEventListener("click", () => {
     document.getElementById("f-status").value = button.dataset.status;
     applyFilters();
+    scrollToListings();
   }));
   document.getElementById("f-district").addEventListener("change", syncSearchControls);
   document.getElementById("f-sort").addEventListener("change", applyFilters);
