@@ -360,29 +360,6 @@
     });
   }
 
-  function createLocationShortcuts() {
-    const counts = new Map();
-    const select = document.getElementById("f-district");
-    allListings.forEach(listing => {
-      if (listing.district) counts.set(listing.district, (counts.get(listing.district) || 0) + 1);
-    });
-    const shortcuts = document.getElementById("location-shortcuts");
-    [...counts].sort((a, b) => b[1] - a[1]).slice(0, 5).forEach(([district]) => {
-      if (![...select.options].some(option => option.value === district)) select.add(new Option(district, district));
-      const button = document.createElement("button");
-      button.type = "button";
-      button.textContent = district;
-      button.dataset.district = district;
-      button.setAttribute("aria-pressed", "false");
-      button.addEventListener("click", () => {
-        select.value = select.value === district ? "" : district;
-        applyFilters();
-      });
-      shortcuts.appendChild(button);
-    });
-    shortcuts.hidden = counts.size === 0;
-  }
-
   document.querySelectorAll("[data-status]").forEach(button => button.addEventListener("click", () => {
     document.getElementById("f-status").value = button.dataset.status;
     applyFilters();
@@ -420,7 +397,6 @@
 
   fetchListings().then(list => {
     allListings = list;
-    createLocationShortcuts();
     if (!list.length) {
       grid.innerHTML = `<p class="empty-state">Sheet холбогдоогүй байна. <code>config.js</code> дотор <b>SHEET_CSV_URL</b>-ээ оруулна уу.</p>`;
       return;

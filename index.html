@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dudu Prime — Үл хөдлөх хөрөнгийн зуучлал</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
-<link rel="stylesheet" href="styles.css?v=20260906-categories">
+<link rel="stylesheet" href="styles.css?v=20260906-compact-categories">
 </head>
 <body>
 
@@ -37,13 +37,13 @@
 
     <form class="property-search" id="search-form" role="search" aria-label="Үл хөдлөх хөрөнгө хайх">
       <div class="search-categories" aria-labelledby="categories-title">
-        <h2 id="categories-title">Ангиллаар хайх</h2>
-    <div class="cat-tiles">
-      <a href="index.html?type=Орон сууц" class="tile" data-type="Орон сууц"><h3>Орон сууц</h3><p>Байр, хотхон</p></a>
-      <a href="index.html?type=Оффис" class="tile" data-type="Оффис"><h3>Оффис</h3><p>Бизнес талбай</p></a>
-      <a href="index.html?type=Газар" class="tile" data-type="Газар"><h3>Газар</h3><p>Хашаа, талбай</p></a>
-      <a href="index.html?type=Барилга" class="tile" data-type="Барилга"><h3>Барилга байгууламж</h3><p>Барилга бүхэлдээ</p></a>
-    </div>
+        <h2 id="categories-title">Ангиллаар үзэх</h2>
+        <div class="cat-tiles">
+          <a href="index.html?type=Орон сууц" class="tile" data-type="Орон сууц"><h3>Орон сууц</h3><p>Байр, хотхон</p></a>
+          <a href="index.html?type=Оффис" class="tile" data-type="Оффис"><h3>Оффис</h3><p>Бизнес талбай</p></a>
+          <a href="index.html?type=Газар" class="tile" data-type="Газар"><h3>Газар</h3><p>Хашаа, талбай</p></a>
+          <a href="index.html?type=Барилга" class="tile" data-type="Барилга"><h3>Барилга байгууламж</h3><p>Барилга бүхэлдээ</p></a>
+        </div>
       </div>
       <div class="search-tabs" role="group" aria-label="Зарын төрөл">
         <button type="button" data-status="" aria-pressed="true" class="is-active">Бүх төрөл</button>
@@ -51,14 +51,11 @@
         <button type="button" data-status="ТҮРЭЭС" aria-pressed="false">Түрээслэх</button>
       </div>
       <input type="hidden" id="f-status" value="">
+      <input type="hidden" id="f-type" value="">
       <div class="search-fields">
         <div class="search-field search-query">
           <label for="f-query">Хайх үг</label>
           <input type="search" id="f-query" placeholder="Хотхон, байршил, түлхүүр үг…">
-        </div>
-        <div class="search-field">
-          <label for="f-type">Үл хөдлөхийн төрөл</label>
-          <select id="f-type"><option value="">Бүх ангилал</option><option>Орон сууц</option><option>Оффис</option><option>Газар</option><option>Барилга</option></select>
         </div>
         <div class="search-field">
           <label for="f-district">Байршил</label>
@@ -66,7 +63,6 @@
         </div>
         <button type="submit" class="property-search-button"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg><span>Хайх</span></button>
       </div>
-      <div class="location-shortcuts" id="location-shortcuts" role="group" aria-label="Дүүргээр хурдан хайх" hidden><span>Байршлаар:</span></div>
     </form>
   </div>
 </section>
@@ -151,6 +147,6 @@
 <script src="config.js"></script>
 <script src="data.js?v=20260903-13"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-<script src="app.js?v=20260906-categories"></script>
+<script src="app.js?v=20260906-compact-categories"></script>
 </body>
 </html>
