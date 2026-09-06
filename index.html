@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dudu Prime — Үл хөдлөх хөрөнгийн зуучлал</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
-<link rel="stylesheet" href="styles.css?v=20260906-search">
+<link rel="stylesheet" href="styles.css?v=20260906-categories">
 </head>
 <body>
 
@@ -36,6 +36,15 @@
     <p>Улаанбаатар хотын шалгарсан саналуудыг нэг дороос. Шууд утсаар холбогдож, тухайн өдөртөө үзэх боломжтой.</p>
 
     <form class="property-search" id="search-form" role="search" aria-label="Үл хөдлөх хөрөнгө хайх">
+      <div class="search-categories" aria-labelledby="categories-title">
+        <h2 id="categories-title">Ангиллаар хайх</h2>
+    <div class="cat-tiles">
+      <a href="index.html?type=Орон сууц" class="tile" data-type="Орон сууц"><h3>Орон сууц</h3><p>Байр, хотхон</p></a>
+      <a href="index.html?type=Оффис" class="tile" data-type="Оффис"><h3>Оффис</h3><p>Бизнес талбай</p></a>
+      <a href="index.html?type=Газар" class="tile" data-type="Газар"><h3>Газар</h3><p>Хашаа, талбай</p></a>
+      <a href="index.html?type=Барилга" class="tile" data-type="Барилга"><h3>Барилга байгууламж</h3><p>Барилга бүхэлдээ</p></a>
+    </div>
+      </div>
       <div class="search-tabs" role="group" aria-label="Зарын төрөл">
         <button type="button" data-status="" aria-pressed="true" class="is-active">Бүх төрөл</button>
         <button type="button" data-status="ЗАРНА" aria-pressed="false">Зарах</button>
@@ -62,17 +71,6 @@
   </div>
 </section>
 
-<section class="section categories-section" aria-labelledby="categories-title">
-  <div class="wrap">
-    <h2 class="section-title" id="categories-title">Ангилалаар үзэх</h2>
-    <div class="cat-tiles">
-      <a href="index.html?type=Орон сууц" class="tile" data-type="Орон сууц"><h3>Орон сууц</h3><p>Байр, хотхон</p></a>
-      <a href="index.html?type=Оффис" class="tile" data-type="Оффис"><h3>Оффис</h3><p>Бизнес талбай</p></a>
-      <a href="index.html?type=Газар" class="tile" data-type="Газар"><h3>Газар</h3><p>Хашаа, талбай</p></a>
-      <a href="index.html?type=Барилга" class="tile" data-type="Барилга"><h3>Барилга байгууламж</h3><p>Барилга бүхэлдээ</p></a>
-    </div>
-  </div>
-</section>
 
 <section class="section listings-section" id="listings-section">
   <div class="wrap">
@@ -153,6 +151,6 @@
 <script src="config.js"></script>
 <script src="data.js?v=20260903-13"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-<script src="app.js?v=20260906-search-scroll"></script>
+<script src="app.js?v=20260906-categories"></script>
 </body>
 </html>

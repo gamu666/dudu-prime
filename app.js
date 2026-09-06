@@ -409,6 +409,7 @@
     history.replaceState(null, "", `${location.pathname}?${nextParams}`);
     syncCategoryState(type);
     applyFilters();
+    scrollToListings();
   });
 
   const initialType = params.get("type");
