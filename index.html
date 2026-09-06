@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dudu Prime — Үл хөдлөх хөрөнгийн зуучлал</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
-<link rel="stylesheet" href="styles.css?v=20260903-20">
+<link rel="stylesheet" href="styles.css?v=20260906-search">
 </head>
 <body>
 
@@ -35,46 +35,30 @@
     <h1>Танд яг тохирсон<br>байр, оффис, газар</h1>
     <p>Улаанбаатар хотын шалгарсан саналуудыг нэг дороос. Шууд утсаар холбогдож, тухайн өдөртөө үзэх боломжтой.</p>
 
-    <button class="mobile-filter-trigger" id="mobile-filter-trigger" type="button"><span>Зар шүүх</span><span aria-hidden="true">＋</span></button>
-    <form class="search-bar" id="search-form">
-      <div class="filter-sheet-head"><strong>Зар шүүх</strong><button type="button" id="filter-sheet-close" aria-label="Хаах">×</button></div>
-      <div class="field">
-        <label>Төрөл</label>
-        <select id="f-type">
-          <option value="">Бүгд</option>
-          <option>Орон сууц</option>
-          <option>Оффис</option>
-          <option>Газар</option>
-          <option>Барилга</option>
-        </select>
+    <form class="property-search" id="search-form" role="search" aria-label="Үл хөдлөх хөрөнгө хайх">
+      <div class="search-tabs" role="group" aria-label="Зарын төрөл">
+        <button type="button" data-status="" aria-pressed="true" class="is-active">Бүх төрөл</button>
+        <button type="button" data-status="ЗАРНА" aria-pressed="false">Зарах</button>
+        <button type="button" data-status="ТҮРЭЭС" aria-pressed="false">Түрээслэх</button>
       </div>
-      <div class="search-divider"></div>
-      <div class="field">
-                <label>Статус</label>
-              <select id="f-status">
-                        <option value="">Бүгд</option>
-                        <option value="ЗАРНА">Зарна</option>
-                        <option value="ТҮРЭЭС">Түрээслүүлнэ</option>
-              </select>
+      <input type="hidden" id="f-status" value="">
+      <div class="search-fields">
+        <div class="search-field search-query">
+          <label for="f-query">Хайх үг</label>
+          <input type="search" id="f-query" placeholder="Хотхон, байршил, түлхүүр үг…">
+        </div>
+        <div class="search-field">
+          <label for="f-type">Үл хөдлөхийн төрөл</label>
+          <select id="f-type"><option value="">Бүх ангилал</option><option>Орон сууц</option><option>Оффис</option><option>Газар</option><option>Барилга</option></select>
+        </div>
+        <div class="search-field">
+          <label for="f-district">Байршил</label>
+          <select id="f-district"><option value="">Бүх дүүрэг</option><option>Багануур</option><option>Багахангай</option><option>Баянгол</option><option>Баянзүрх</option><option>Налайх</option><option>Сонгинохайрхан</option><option>Сүхбаатар</option><option>Хан-Уул</option><option>Чингэлтэй</option></select>
+        </div>
+        <button type="submit" class="property-search-button"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg><span>Хайх</span></button>
       </div>
-          <div class="search-divider"></div>
-      <div class="field">
-        <label>Дүүрэг</label>
-        <select id="f-district">
-          <option value="">Бүгд</option>
-          <option>Багануур</option><option>Багахангай</option><option>Баянгол</option>
-          <option>Баянзүрх</option><option>Налайх</option><option>Сонгинохайрхан</option>
-          <option>Сүхбаатар</option><option>Хан-Уул</option><option>Чингэлтэй</option>
-        </select>
-      </div>
-      <div class="search-divider"></div>
-      <div class="field">
-        <label>Хайх үг</label>
-        <input type="text" id="f-query" placeholder="Жишээ: Зайсан, 3 өрөө...">
-      </div>
-      <button type="submit" class="search-btn">Хайх</button>
+      <div class="location-shortcuts" id="location-shortcuts" role="group" aria-label="Дүүргээр хурдан хайх" hidden><span>Байршлаар:</span></div>
     </form>
-    <button class="filter-backdrop" id="filter-backdrop" type="button" aria-label="Шүүлтүүрийг хаах"></button>
   </div>
 </section>
 
@@ -95,9 +79,17 @@
     <div class="section-head">
       <div>
         <p class="section-eyebrow">Онцлох санал</p>
-        <h2 class="section-title" id="results-title">Шинээр нэмэгдсэн</h2>
+        <h2 class="section-title" id="results-title" aria-live="polite">Бүх зар</h2>
       </div>
-      <div class="view-switch" role="group" aria-label="Харагдац"><button class="is-active" id="grid-view-button" type="button">Жагсаалт</button><button id="map-view-button" type="button">Газрын зураг</button></div>
+      <div class="listing-controls">
+        <label class="listing-sort" for="f-sort"><span class="sort-label">Эрэмбэлэх</span>
+          <select id="f-sort"><option value="newest">Сүүлд нэмэгдсэн</option><option value="oldest">Эхэнд нэмэгдсэн</option></select>
+        </label>
+        <div class="view-switch" role="group" aria-label="Харагдац">
+          <button class="is-active" id="grid-view-button" type="button" aria-pressed="true" aria-controls="listing-grid"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h12M9 12h12M9 18h12M3 6h1M3 12h1M3 18h1"/></svg>Жагсаалтаар</button>
+          <button id="map-view-button" type="button" aria-pressed="false" aria-controls="map-view"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 5 6-2 6 2 6-2v16l-6 2-6-2-6 2V5Zm6-2v16m6-14v16"/></svg>Газрын зургаар</button>
+        </div>
+      </div>
     </div>
     <div class="listing-grid" id="listing-grid">
       <div class="skeleton-card"></div><div class="skeleton-card"></div><div class="skeleton-card"></div>
@@ -161,6 +153,6 @@
 <script src="config.js"></script>
 <script src="data.js?v=20260903-13"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-<script src="app.js?v=20260903-20"></script>
+<script src="app.js?v=20260906-search"></script>
 </body>
 </html>

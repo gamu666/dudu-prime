@@ -31,6 +31,54 @@ button{font-family:inherit;cursor:pointer;}
 .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px;}
 @media (max-width:640px){.wrap{padding:0 16px;}}
 
+/* Search and listing controls use the existing charcoal / gold brand tokens. */
+.property-search{max-width:1120px;background:var(--white);color:var(--ink);border:1px solid var(--border);border-radius:24px;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.2);}
+.search-tabs{display:flex;gap:8px;border-bottom:1px solid var(--border);padding-bottom:18px;margin-bottom:20px;}
+.search-tabs button{min-height:44px;padding:10px 22px;border:1px solid transparent;border-radius:12px;background:transparent;color:var(--muted);font-size:14px;font-weight:650;}
+.search-tabs button.is-active{background:var(--ink);color:var(--accent-bright);}
+.search-tabs button:hover:not(.is-active){background:var(--soft);color:var(--ink);}
+.search-fields{display:grid;grid-template-columns:minmax(0,1.5fr) repeat(2,minmax(0,1fr)) auto;gap:12px;align-items:stretch;}
+.search-field{min-width:0;border:1px solid var(--border);border-radius:12px;padding:10px 14px;background:var(--white);}
+.search-field label{display:block;margin-bottom:7px;font-size:11px;font-weight:600;color:var(--muted);}
+.search-field input,.search-field select{display:block;min-width:0;width:100%;min-height:26px;padding:0;border:0;background:transparent;color:var(--ink);font:inherit;font-size:14px;}
+.search-field:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px rgba(217,163,71,.18);}
+.search-field input:focus,.search-field select:focus{outline:none;}
+.property-search-button{display:flex;align-items:center;justify-content:center;gap:9px;min-height:64px;border:0;border-radius:12px;padding:14px 28px;background:var(--accent);color:var(--ink);font-size:15px;font-weight:700;}
+.property-search-button:hover{background:var(--accent-bright);}
+.property-search svg,.listing-controls svg{width:20px;height:20px;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+.location-shortcuts{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-top:18px;}
+.location-shortcuts>span{font-size:12px;color:var(--muted);margin-right:4px;}
+.location-shortcuts button{min-height:36px;border:1px solid var(--border);border-radius:999px;padding:7px 13px;background:var(--soft);color:var(--ink);font-size:12px;}
+.location-shortcuts button:hover,.location-shortcuts button.is-active{border-color:var(--accent);background:rgba(217,163,71,.15);}
+.property-search button:focus-visible,.listing-controls button:focus-visible,.listing-controls select:focus-visible{outline:2px solid var(--accent);outline-offset:3px;}
+.listing-controls{display:flex;align-items:center;flex-wrap:wrap;gap:12px;}
+.listing-sort{display:flex;align-items:center;gap:8px;}
+.sort-label{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;}
+.listing-sort select{min-height:44px;max-width:100%;border:1px solid var(--border);border-radius:12px;background:var(--white);color:var(--ink);padding:10px 12px;font:inherit;font-size:13px;}
+.listing-controls .view-switch{width:auto;}
+.listing-controls .view-switch button{display:flex;align-items:center;justify-content:center;gap:7px;min-height:42px;white-space:nowrap;}
+@media(max-width:1000px){
+  .search-fields{grid-template-columns:repeat(2,minmax(0,1fr));}
+  .search-query{grid-column:1/-1;}
+  .property-search-button{grid-column:1/-1;min-height:48px;}
+}
+@media(max-width:600px){
+  .property-search{padding:16px;border-radius:20px;}
+  .search-tabs{gap:4px;padding-bottom:14px;margin-bottom:16px;}
+  .search-tabs button{flex:1;padding:10px 6px;font-size:13px;}
+  .search-fields{gap:10px;}
+  .search-field{padding:10px;}
+  .search-field input,.search-field select{font-size:16px;}
+  .location-shortcuts{gap:6px;margin-top:14px;}
+  .location-shortcuts>span{width:100%;margin-bottom:2px;}
+  .location-shortcuts button{min-height:40px;}
+  .listing-controls{align-items:stretch;width:100%;gap:10px;}
+  .listing-controls .listing-sort,.listing-controls .view-switch{width:100%;}
+  .listing-sort select{width:100%;}
+  .listing-controls .view-switch button{flex:1;padding:9px 8px;font-size:12px;}
+}
+@media(max-width:360px){.search-fields{grid-template-columns:minmax(0,1fr);}}
+
 /* ---------- Header ---------- */
 .site-header{background:var(--ink);position:sticky;top:0;z-index:40;}
 .site-header .wrap{display:flex;align-items:center;justify-content:space-between;padding-top:18px;padding-bottom:18px;}

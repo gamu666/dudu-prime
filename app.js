@@ -59,62 +59,6 @@
     element.animate([{ transform: "scale(.8)" }, { transform: "scale(1.12)" }, { transform: "scale(1)" }], { duration: 320, easing: "cubic-bezier(.2,.8,.2,1)" });
   }
 
-  function enhanceSelect(select) {
-    const shell = document.createElement("div");
-    shell.className = "custom-select";
-    const trigger = document.createElement("button");
-    trigger.type = "button";
-    trigger.className = "custom-select-trigger";
-    trigger.dataset.for = select.id;
-    trigger.setAttribute("aria-haspopup", "listbox");
-    trigger.setAttribute("aria-expanded", "false");
-    const menu = document.createElement("div");
-    menu.className = "custom-select-menu";
-    menu.setAttribute("role", "listbox");
-
-    function sync() {
-      const selected = select.options[select.selectedIndex];
-      trigger.innerHTML = `<span>${selected.textContent}</span><i aria-hidden="true"></i>`;
-      menu.querySelectorAll("button").forEach(option => {
-        const active = option.dataset.value === select.value;
-        option.classList.toggle("is-selected", active);
-        option.setAttribute("aria-selected", String(active));
-      });
-    }
-    function close() {
-      shell.classList.remove("is-open");
-      trigger.setAttribute("aria-expanded", "false");
-    }
-
-    [...select.options].forEach(option => {
-      const item = document.createElement("button");
-      item.type = "button";
-      item.setAttribute("role", "option");
-      item.dataset.value = option.value;
-      item.innerHTML = `<span>${option.textContent}</span><i aria-hidden="true"></i>`;
-      item.addEventListener("click", () => {
-        select.value = option.value;
-        select.dispatchEvent(new Event("change", { bubbles: true }));
-        sync();
-        close();
-        trigger.focus();
-      });
-      menu.appendChild(item);
-    });
-    trigger.addEventListener("click", () => {
-      const opening = !shell.classList.contains("is-open");
-      document.querySelectorAll(".custom-select.is-open").forEach(open => open.classList.remove("is-open"));
-      shell.classList.toggle("is-open", opening);
-      trigger.setAttribute("aria-expanded", String(opening));
-    });
-    select.classList.add("native-select-enhanced");
-    select.insertAdjacentElement("afterend", shell);
-    shell.append(trigger, menu);
-    select.addEventListener("change", sync);
-    sync();
-    return { shell, close };
-  }
-
   function syncCategoryState(type) {
     const selectedType = (type || "").trim().toLocaleLowerCase("mn");
     document.querySelectorAll(".tile[data-type]").forEach(tile => {
@@ -360,7 +304,10 @@
     });
     document.getElementById("results-title").textContent =
             showingSaved ? `Хадгалсан ${filtered.length} зар` :
-            (type || status || district || q) ? `${filtered.length} тохирох зар` : "Шинээр нэмэгдсэн";
+            (type || status || district || q) ? `${filtered.length} тохирох зар` : "Бүх зар";
+    // Sheet rows are appended as listings are added; no creation timestamp is supplied.
+    if (document.getElementById("f-sort").value === "newest") filtered.reverse();
+    syncSearchControls();
     render(filtered);
     if (document.getElementById("map-view").classList.contains("is-active")) renderMap();
   }
@@ -385,35 +332,69 @@
   document.getElementById("panel-backdrop").addEventListener("click", closePanels);
   document.getElementById("clear-compare").addEventListener("click", () => { setCompare(new Set()); applyFilters(); });
   document.getElementById("open-compare").addEventListener("click", openComparison);
-  document.getElementById("grid-view-button").addEventListener("click", () => {
-    document.getElementById("listing-grid").hidden = false; document.getElementById("map-view").classList.remove("is-active");
-    document.getElementById("grid-view-button").classList.add("is-active"); document.getElementById("map-view-button").classList.remove("is-active");
-  });
-  document.getElementById("map-view-button").addEventListener("click", () => {
-    document.getElementById("listing-grid").hidden = true; document.getElementById("map-view").classList.add("is-active");
-    document.getElementById("map-view-button").classList.add("is-active"); document.getElementById("grid-view-button").classList.remove("is-active"); renderMap();
-  });
+  function setView(view) {
+    const isMap = view === "map";
+    grid.hidden = isMap;
+    document.getElementById("map-view").classList.toggle("is-active", isMap);
+    document.getElementById("map-view").setAttribute("aria-hidden", String(!isMap));
+    ["grid", "map"].forEach(name => {
+      const button = document.getElementById(name + "-view-button");
+      button.classList.toggle("is-active", name === view);
+      button.setAttribute("aria-pressed", String(name === view));
+    });
+    if (isMap) renderMap();
+  }
+  document.getElementById("grid-view-button").addEventListener("click", () => setView("grid"));
+  document.getElementById("map-view-button").addEventListener("click", () => setView("map"));
 
-  document.getElementById("search-form").addEventListener("submit", (e) => {
+  function syncSearchControls() {
+    document.querySelectorAll("[data-status]").forEach(button => {
+      const active = button.dataset.status === document.getElementById("f-status").value;
+      button.classList.toggle("is-active", active);
+      button.setAttribute("aria-pressed", String(active));
+    });
+    document.querySelectorAll("[data-district]").forEach(button => {
+      const active = button.dataset.district === document.getElementById("f-district").value;
+      button.classList.toggle("is-active", active);
+      button.setAttribute("aria-pressed", String(active));
+    });
+  }
+
+  function createLocationShortcuts() {
+    const counts = new Map();
+    const select = document.getElementById("f-district");
+    allListings.forEach(listing => {
+      if (listing.district) counts.set(listing.district, (counts.get(listing.district) || 0) + 1);
+    });
+    const shortcuts = document.getElementById("location-shortcuts");
+    [...counts].sort((a, b) => b[1] - a[1]).slice(0, 5).forEach(([district]) => {
+      if (![...select.options].some(option => option.value === district)) select.add(new Option(district, district));
+      const button = document.createElement("button");
+      button.type = "button";
+      button.textContent = district;
+      button.dataset.district = district;
+      button.setAttribute("aria-pressed", "false");
+      button.addEventListener("click", () => {
+        select.value = select.value === district ? "" : district;
+        applyFilters();
+      });
+      shortcuts.appendChild(button);
+    });
+    shortcuts.hidden = counts.size === 0;
+  }
+
+  document.querySelectorAll("[data-status]").forEach(button => button.addEventListener("click", () => {
+    document.getElementById("f-status").value = button.dataset.status;
+    applyFilters();
+  }));
+  document.getElementById("f-district").addEventListener("change", syncSearchControls);
+  document.getElementById("f-sort").addEventListener("change", applyFilters);
+  document.getElementById("search-form").addEventListener("submit", e => {
     e.preventDefault();
     applyFilters();
-    closeFilterSheet();
+    scrollToListings();
   });
-
-  const filterForm = document.getElementById("search-form");
-  function openFilterSheet() {
-    filterForm.classList.add("is-open");
-    document.body.classList.add("filter-sheet-open");
-    document.getElementById("f-type").focus({ preventScroll: true });
-  }
-  function closeFilterSheet() {
-    filterForm.classList.remove("is-open");
-    document.body.classList.remove("filter-sheet-open");
-  }
-  document.getElementById("mobile-filter-trigger").addEventListener("click", openFilterSheet);
-  document.getElementById("filter-sheet-close").addEventListener("click", closeFilterSheet);
-  document.getElementById("filter-backdrop").addEventListener("click", closeFilterSheet);
-  document.addEventListener("keydown", e => { if (e.key === "Escape") { closeFilterSheet(); closePanels(); } });
+  document.addEventListener("keydown", e => { if (e.key === "Escape") closePanels(); });
 
   document.querySelector(".cat-tiles").addEventListener("click", (e) => {
     const tile = e.target.closest(".tile[data-type]");
@@ -435,18 +416,9 @@
   updateSavedControl();
   updateCompareTray();
 
-  const enhancedSelects = matchMedia("(min-width: 701px)").matches
-    ? [...document.querySelectorAll(".search-bar select")].map(enhanceSelect)
-    : [];
-  document.addEventListener("click", e => {
-    enhancedSelects.forEach(({ shell, close }) => { if (!shell.contains(e.target)) close(); });
-  });
-  document.addEventListener("keydown", e => {
-    if (e.key === "Escape") enhancedSelects.forEach(({ close }) => close());
-  });
-
   fetchListings().then(list => {
     allListings = list;
+    createLocationShortcuts();
     if (!list.length) {
       grid.innerHTML = `<p class="empty-state">Sheet холбогдоогүй байна. <code>config.js</code> дотор <b>SHEET_CSV_URL</b>-ээ оруулна уу.</p>`;
       return;
