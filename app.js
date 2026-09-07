@@ -54,6 +54,13 @@
     }));
   }
 
+  function scrollToSearchControls() {
+    requestAnimationFrame(() => document.getElementById("search-form").scrollIntoView({
+      behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+      block: "start"
+    }));
+  }
+
   function pulse(element) {
     if (!element.animate || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     element.animate([{ transform: "scale(.8)" }, { transform: "scale(1.12)" }, { transform: "scale(1)" }], { duration: 320, easing: "cubic-bezier(.2,.8,.2,1)" });
@@ -363,7 +370,7 @@
   document.querySelectorAll("[data-status]").forEach(button => button.addEventListener("click", () => {
     document.getElementById("f-status").value = button.dataset.status;
     applyFilters();
-    scrollToListings();
+    scrollToSearchControls();
   }));
   document.getElementById("f-district").addEventListener("change", syncSearchControls);
   document.getElementById("f-sort").addEventListener("change", applyFilters);
@@ -386,7 +393,7 @@
     history.replaceState(null, "", `${location.pathname}?${nextParams}`);
     syncCategoryState(type);
     applyFilters();
-    scrollToListings();
+    scrollToSearchControls();
   });
 
   const initialType = params.get("type");
@@ -405,6 +412,7 @@
     showingSaved = false;
     updateSavedControl();
     applyFilters();
+    if (initialType) scrollToSearchControls();
     if (openSavedOnLoad) { renderSavedDrawer(); openPanel(document.getElementById("saved-drawer")); }
   }).catch(err => {
     console.error(err);
