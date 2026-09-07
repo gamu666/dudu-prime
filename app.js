@@ -388,9 +388,10 @@
     const type = tile.dataset.type;
     document.getElementById("f-type").value = type;
     const nextParams = new URLSearchParams();
-    nextParams.set("type", type);
+    if (type) nextParams.set("type", type);
     if (showingSaved) nextParams.set("saved", "1");
-    history.replaceState(null, "", `${location.pathname}?${nextParams}`);
+    const nextQuery = nextParams.toString();
+    history.replaceState(null, "", nextQuery ? `${location.pathname}?${nextQuery}` : location.pathname);
     syncCategoryState(type);
     applyFilters();
     scrollToSearchControls();
